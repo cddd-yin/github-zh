@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>效果预览 · GitHub 中文化</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", "Microsoft YaHei", sans-serif; color: #1f2328; background: #fff; }
+  .note { background: #fff8c5; border-bottom: 1px solid #d4a72c66; padding: 8px 16px; font-size: 13px; }
+  .note b { color: #7d4e00; }
+  header.gh { background: #24292f; color: #fff; padding: 12px 16px; display: flex; align-items: center; gap: 14px; }
+  header.gh .logo { font-weight: 700; }
+  header.gh input { flex: 0 1 300px; padding: 5px 10px; border-radius: 6px; border: 1px solid #57606a; background: #24292f; color: #fff; }
+  header.gh input::placeholder { color: #8b949e; }
+  header.gh nav a { color: #fff; text-decoration: none; margin-right: 12px; }
+  main { max-width: 1000px; margin: 0 auto; padding: 16px 24px 96px; }
+  .crumb { color: #0969da; font-size: 18px; margin-top: 8px; }
+  .crumb span { color: #0969da; }
+  .badge-pub { border: 1px solid #d0d7de; border-radius: 20px; color: #57606a; padding: 1px 8px; font-size: 12px; margin-left: 8px; vertical-align: middle; }
+  .btn-group button { padding: 4px 12px; border: 1px solid #d0d7de; background: #f6f8fa; border-radius: 6px; cursor: pointer; }
+  .tabs { display: flex; gap: 8px; border-bottom: 1px solid #d0d7de; margin-top: 12px; flex-wrap: wrap; }
+  .tabs a { padding: 8px 12px; text-decoration: none; color: #1f2328; border-bottom: 2px solid transparent; }
+  .tabs a.active { border-bottom-color: #fd8c73; font-weight: 600; }
+  .tabs .count { background: #eaeef2; border-radius: 20px; padding: 0 6px; font-size: 12px; margin-left: 4px; }
+  .toolbar { display: flex; gap: 8px; margin: 16px 0; align-items: center; }
+  .branch { padding: 5px 10px; border: 1px solid #d0d7de; border-radius: 6px; background: #f6f8fa; font-weight: 600; }
+  .toolbar button { padding: 5px 12px; border: 1px solid #d0d7de; background: #f6f8fa; border-radius: 6px; cursor: pointer; }
+  .filelist { border: 1px solid #d0d7de; border-radius: 6px; }
+  .file { display: flex; justify-content: space-between; padding: 8px 16px; border-top: 1px solid #d8dee4; }
+  .file:first-child { border-top: 0; background: #f6f8fa; font-weight: 600; }
+  .file a { color: #0969da; text-decoration: none; }
+  .file .msg { color: #57606a; }
+  .readme { margin-top: 20px; border: 1px solid #d0d7de; border-radius: 6px; }
+  .readme-head { padding: 8px 16px; border-bottom: 1px solid #d8dee4; font-weight: 600; background: #f6f8fa; border-radius: 6px 6px 0 0; }
+  .markdown-body { padding: 16px 24px; }
+  .markdown-body pre { background: #f6f8fa; padding: 12px; border-radius: 6px; overflow: auto; }
+  aside .box { border: 1px solid #d0d7de; border-radius: 6px; padding: 12px 16px; margin-top: 20px; }
+  aside .box h3 { margin: 0 0 8px; font-size: 14px; }
+  aside .box p { margin: 0 0 6px; color: #57606a; font-size: 13px; }
+  aside .box a { color: #0969da; text-decoration: none; }
+  .footer-bar { position: fixed; right: 16px; bottom: 16px; display: flex; gap: 8px; }
+  .footer-bar button { padding: 8px 14px; border-radius: 8px; border: 1px solid #d0d7de; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.12); cursor: pointer; }
+  .footer-bar button:hover { background: #f6f8fa; }
+</style>
+</head>
+<body>
+<div class="note">本页是 <b>模拟的 GitHub 页面</b>，用来直观预览《GitHub 中文化》脚本效果：界面词汇会变成中文，而 <b>代码、README 正文、文件名、提交信息</b> 保持原样（不误伤）。</div>
+
+<header class="gh">
+  <span class="logo">GitHub</span>
+  <input placeholder="Search or jump to...">
+  <nav>
+    <a href="#">Pull requests</a>
+    <a href="#">Issues</a>
+    <a href="#">Marketplace</a>
+    <a href="#">Explore</a>
+  </nav>
+  <span style="flex:1"></span>
+  <a href="#">Sign in</a>
+</header>
+
+<main style="display:flex; gap:24px; align-items:flex-start;">
+  <div style="flex:1">
+    <div class="crumb"><span>cddd-yin</span> / <strong>demo-repo</strong> <span class="badge-pub">Public</span></div>
+    <div class="repo-top" style="margin: 10px 0;">
+      <div class="btn-group">
+        <button>Watch</button>
+        <button>Fork <b>12</b></button>
+        <button>Star <b>345</b></button>
+      </div>
+    </div>
+    <div class="tabs">
+      <a class="active" href="#">Code</a>
+      <a href="#">Issues <span class="count">7</span></a>
+      <a href="#">Pull requests <span class="count">3</span></a>
+      <a href="#">Actions</a>
+      <a href="#">Projects</a>
+      <a href="#">Wiki</a>
+      <a href="#">Security</a>
+      <a href="#">Insights</a>
+    </div>
+    <div class="toolbar">
+      <span class="branch">main</span>
+      <button>Go to file</button>
+      <button>Add file</button>
+      <span style="flex:1"></span>
+      <span class="msg">1,234 Commits</span>
+    </div>
+    <div class="filelist">
+      <div class="file"><span>.github</span><span class="msg">Update workflow</span></div>
+      <div class="file"><a href="/demo/blob/main/LICENSE">LICENSE</a><span class="msg">Initial commit</span></div>
+      <div class="file"><a href="/demo/blob/main/README.md">README.md</a><span class="msg">Update README</span></div>
+      <div class="file"><a href="/demo/blob/main/src.js">src.js</a><span class="msg">Fix issues in parser</span></div>
+    </div>
+    <div class="readme">
+      <div class="readme-head">README.md</div>
+      <div class="markdown-body">
+        <p>This demo page shows that body text is never translated: commits, issues, stars and forks are just words here.</p>
+        <pre><code>const issues = 3; // Star this repository? No.
+console.log("Commit your changes");</code></pre>
+      </div>
+    </div>
+  </div>
+  <aside style="width: 280px;">
+    <div class="box">
+      <h3>About</h3>
+      <p>GitHub 中文化测试用模拟仓库。</p>
+      <p>Readme</p>
+      <p>MIT license</p>
+    </div>
+    <div class="box">
+      <h3>Releases</h3>
+      <p>No releases published</p>
+      <p><a href="#">Create a new release</a></p>
+    </div>
+    <div class="box">
+      <h3>Packages</h3>
+      <p>No packages published</p>
+    </div>
+    <div class="box">
+      <h3>Languages</h3>
+      <p>JavaScript 100%</p>
+    </div>
+  </aside>
+</main>
+
+<div class="footer-bar">
+  <button onclick="window.__ghzh && window.__ghzh.setEnabled(false)">关闭翻译（还原英文）</button>
+  <button onclick="window.__ghzh && window.__ghzh.setEnabled(true)">开启翻译</button>
+</div>
+
+<script src="../GitHub-中文化.user.js"></script>
+</body>
+</html>

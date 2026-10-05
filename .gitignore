@@ -1,0 +1,7 @@
+# 系统 / 编辑器杂项
+.DS_Store
+Thumbs.db
+*.log
+
+# 测试过程中的临时文件
+tests/*.tmp

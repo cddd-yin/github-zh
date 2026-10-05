@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>自动化测试 · GitHub 中文化</title>
+<style>
+  :root { color-scheme: light; }
+  body { font: 14px/1.7 "Segoe UI", "Microsoft YaHei", "Noto Sans", sans-serif; max-width: 900px; margin: 24px auto; padding: 0 16px; color: #1f2328; }
+  h1 { font-size: 20px; margin-bottom: 4px; }
+  p.lead { color: #57606a; margin-top: 0; }
+  #summary { font-size: 16px; font-weight: 600; padding: 10px 14px; border-radius: 8px; background: #f6f8fa; border: 1px solid #d0d7de; margin: 14px 0; }
+  #summary.pass { background: #dafbe1; border-color: #aceebb; color: #1a7f37; }
+  #summary.fail { background: #ffebe9; border-color: #ff818266; color: #cf222e; }
+  ol { padding-left: 26px; }
+  li { margin: 2px 0; }
+  li.pass .badge { color: #1a7f37; }
+  li.fail .badge { color: #cf222e; }
+  .badge { display: inline-block; min-width: 42px; font-weight: 700; font-size: 12px; margin-right: 6px; }
+  .detail { color: #57606a; font-size: 12px; word-break: break-all; }
+  code { background: #f6f8fa; border-radius: 4px; padding: 0 4px; font-size: 12px; }
+</style>
+</head>
+<body>
+<h1>GitHub 中文化 · 自动化测试</h1>
+<p class="lead">页面加载后自动运行；结果同时写入控制台变量 <code>window.__ghzhTest</code>，便于自动化读取。</p>
+<div id="summary">运行中…</div>
+<ol id="results" data-ghzh-skip></ol>
+
+<!-- 被测脚本（与发布版是同一个文件） -->
+<script src="../GitHub-中文化.user.js"></script>
+
+<script>
+(function () {
+  'use strict';
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function ready(cb) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () {
+        /* 等用户脚本完成初始化（它先注册 DOMContentLoaded，先执行） */
+        requestAnimationFrame(function () { setTimeout(cb, 50); });
+      });
+    } else {
+      cb();
+    }
+  }
+
+  ready(run);
+
+  function run() {
+    var g = window.__ghzh;
+    if (!g) {
+      renderError('未找到 window.__ghzh，用户脚本未成功加载。');
+      return;
+    }
+
+    var results = [];
+    var passed = 0;
+
+    function test(name, fn) {
+      try {
+        fn();
+        results.push({ name: name, ok: true });
+        passed++;
+      } catch (e) {
+        results.push({ name: name, ok: false, detail: (e && e.message) || String(e) });
+      }
+    }
+
+    function assertEq(actual, expected) {
+      if (actual !== expected) {
+        throw new Error('实际 ' + JSON.stringify(actual) + ' ≠ 期望 ' + JSON.stringify(expected));
+      }
+    }
+
+    function sandbox(html) {
+      var box = document.createElement('div');
+      box.innerHTML = html;
+      return box;
+    }
+    function translated(html) {
+      var box = sandbox(html);
+      g.translateRoot(box);
+      return box;
+    }
+    function textOf(html) {
+      return translated(html).textContent.trim();
+    }
+
+    /* ============ A. 词库精确匹配 ============ */
+    test('词库：Issues → 议题', function () {
+      assertEq(textOf('<span>Issues</span>'), '议题');
+    });
+    test('词库：大小写不敏感（ISSUES）', function () {
+      assertEq(textOf('<span>ISSUES</span>'), '议题');
+    });
+    test('词库：忽略并保留首尾空白', function () {
+      assertEq(translated('<span>  Sign in  </span>').textContent, '  登录  ');
+    });
+    test('词库：Pull Requests → 拉取请求', function () {
+      assertEq(textOf('<a>Pull Requests</a>'), '拉取请求');
+    });
+    test('词库：commit → 提交', function () {
+      assertEq(textOf('<span>commit</span>'), '提交');
+    });
+    test('不翻译：整句不做部分替换', function () {
+      assertEq(textOf('<p>Commit your changes before you pull.</p>'), 'Commit your changes before you pull.');
+    });
+    test('不翻译：正文句子不被命中', function () {
+      assertEq(textOf('<p>Issues are tracked here.</p>'), 'Issues are tracked here.');
+    });
+
+    /* ============ B. 动态句式 ============ */
+    test('动态：48,917 Commits → 48,917 个提交', function () {
+      assertEq(textOf('<span>48,917 Commits</span>'), '48,917 个提交');
+    });
+    test('动态：1 Commit → 1 个提交', function () {
+      assertEq(textOf('<span>1 Commit</span>'), '1 个提交');
+    });
+    test('动态：分支领先提示', function () {
+      assertEq(textOf('<p>This branch is 3 commits ahead of main.</p>'), '此分支领先 main 3 个提交。');
+    });
+    test('动态：3 commits ahead', function () {
+      assertEq(textOf('<span>3 commits ahead</span>'), '领先 3 个提交');
+    });
+    test('动态：Commits on Oct 5, 2026', function () {
+      assertEq(textOf('<div>Commits on Oct 5, 2026</div>'), '提交于 Oct 5, 2026');
+    });
+    test('动态：Updated 2 days ago', function () {
+      assertEq(textOf('<div>Updated 2 days ago</div>'), '更新于 2 days ago');
+    });
+    test('动态：1,234 Stars → 1,234 个星标', function () {
+      assertEq(textOf('<span>1,234 Stars</span>'), '1,234 个星标');
+    });
+
+    /* ============ C. 跳过区域（不误伤） ============ */
+    test('跳过：行内代码 code', function () {
+      assertEq(textOf('<p><code>Commit</code></p>'), 'Commit');
+    });
+    test('跳过：代码块 pre', function () {
+      assertEq(textOf('<pre>Star</pre>'), 'Star');
+    });
+    test('跳过：README 正文 .markdown-body', function () {
+      assertEq(textOf('<div class="markdown-body"><p>Issues</p></div>'), 'Issues');
+    });
+    test('跳过：文件名链接 /blob/', function () {
+      assertEq(textOf('<a href="/o/r/blob/main/Settings">Settings</a>'), 'Settings');
+    });
+    test('跳过：目录链接 /tree/', function () {
+      assertEq(textOf('<a href="/o/r/tree/main/Settings">Settings</a>'), 'Settings');
+    });
+    test('跳过：议题标题链接', function () {
+      assertEq(textOf('<a data-testid="issue-listitem-title-link">Commit</a>'), 'Commit');
+    });
+    test('跳过：用户名 .user-mention', function () {
+      assertEq(textOf('<span class="user-mention">Star</span>'), 'Star');
+    });
+    test('跳过：筛选框包装层', function () {
+      assertEq(textOf('<div class="FilterInputWrapper"><span>Issues</span></div>'), 'Issues');
+    });
+    test('跳过：自定义 data-ghzh-skip', function () {
+      assertEq(textOf('<div data-ghzh-skip><span>Sign in</span></div>'), 'Sign in');
+    });
+    test('跳过：textarea 文本', function () {
+      assertEq(textOf('<textarea>Star</textarea>'), 'Star');
+    });
+
+    /* ============ D. 属性翻译 ============ */
+    test('属性：按钮 title', function () {
+      var box = translated('<button title="Star this repository"></button>');
+      assertEq(box.firstElementChild.getAttribute('title'), '星标本仓库');
+    });
+    test('属性：输入框 placeholder（v1.1.0 修复）', function () {
+      var box = translated('<input placeholder="Search GitHub">');
+      assertEq(box.firstElementChild.getAttribute('placeholder'), '搜索 GitHub');
+    });
+    test('属性：无障碍 aria-label', function () {
+      var box = translated('<button aria-label="Open global navigation menu"></button>');
+      assertEq(box.firstElementChild.getAttribute('aria-label'), '打开全局导航菜单');
+    });
+    test('跳过：正文内图片 alt 不翻译', function () {
+      var box = translated('<div class="markdown-body"><img alt="Issues"></div>');
+      assertEq(box.firstElementChild.firstElementChild.getAttribute('alt'), 'Issues');
+    });
+
+    /* ============ E. 幂等与开关 ============ */
+    test('幂等：重复翻译不叠加', function () {
+      var box = translated('<span>Issues</span>');
+      g.translateRoot(box);
+      assertEq(box.textContent.trim(), '议题');
+    });
+    test('开关：关闭还原英文、开启恢复中文', function () {
+      var box = document.createElement('div');
+      box.innerHTML = '<span>Sign in</span>';
+      document.body.appendChild(box);
+      try {
+        g.translateRoot(box);
+        assertEq(box.textContent.trim(), '登录');
+        g.setEnabled(false, true);
+        assertEq(box.textContent.trim(), 'Sign in');
+      } finally {
+        g.setEnabled(true, true);
+        box.remove();
+      }
+      assertEq(box.textContent.trim(), '登录');
+    });
+
+    /* ============ F. 标签页标题 ============ */
+    test('标题：Sign in to GitHub · GitHub', function () {
+      var old = document.title;
+      try {
+        document.title = 'Sign in to GitHub · GitHub';
+        g.translateTitle();
+        assertEq(document.title, '登录 GitHub · GitHub');
+      } finally {
+        document.title = old;
+      }
+    });
+
+    try { localStorage.removeItem('ghzh:enabled'); } catch (e) {}
+
+    render(results, passed);
+  }
+
+  function render(results, passed) {
+    var failed = results.length - passed;
+    var summary = document.getElementById('summary');
+    var list = document.getElementById('results');
+
+    summary.textContent = failed === 0
+      ? '✅ 全部通过：' + passed + ' / ' + results.length
+      : '❌ 失败 ' + failed + ' 项；通过 ' + passed + ' / ' + results.length;
+    summary.className = failed === 0 ? 'pass' : 'fail';
+
+    results.forEach(function (r) {
+      var li = document.createElement('li');
+      li.className = r.ok ? 'pass' : 'fail';
+      li.innerHTML = '<span class="badge">' + (r.ok ? 'PASS' : 'FAIL') + '</span>' +
+        escapeHtml(r.name) +
+        (r.ok ? '' : '<div class="detail">' + escapeHtml(r.detail) + '</div>');
+      list.appendChild(li);
+    });
+
+    window.__ghzhTest = {
+      total: results.length,
+      passed: passed,
+      failed: failed,
+      results: results,
+    };
+    console.log('[ghzh-test] ' + passed + '/' + results.length + ' 通过' + (failed ? '，' + failed + ' 失败' : ''));
+  }
+
+  function renderError(msg) {
+    var summary = document.getElementById('summary');
+    summary.textContent = '❌ ' + msg;
+    summary.className = 'fail';
+    window.__ghzhTest = { total: 0, passed: 0, failed: 1, results: [{ name: msg, ok: false, detail: msg }] };
+  }
+})();
+</script>
+</body>
+</html>
