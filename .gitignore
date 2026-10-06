@@ -5,3 +5,4 @@ Thumbs.db
 
 # 测试过程中的临时文件
 tests/*.tmp
+tests/_probe/

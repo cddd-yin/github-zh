@@ -2,7 +2,7 @@
 // @name         GitHub 中文化 · 界面翻译
 // @name:en      GitHub Chinese UI
 // @namespace    https://github.com/cddd-yin/github-zh
-// @version      1.2.0
+// @version      1.3.0
 // @homepageURL  https://github.com/cddd-yin/github-zh
 // @supportURL   https://github.com/cddd-yin/github-zh/issues
 // @updateURL    https://raw.githubusercontent.com/cddd-yin/github-zh/main/GitHub-%E4%B8%AD%E6%96%87%E5%8C%96.user.js
@@ -29,6 +29,12 @@
  *   4. 油猴菜单可随时开关，关闭时还原成英文。
  *
  * 更新记录：
+ *   v1.3.0  个人主页专项：补齐主页词汇（屏蔽 / 热门仓库 / 贡献图 / 活动概览 /
+ *           页脚等）；月份、星期与中文日期（贡献图坐标、悬停提示、活动时间）；
+ *           活动列表句式（在 N 个仓库中创建了 M 个提交 等）；支持 Shadow DOM，
+ *           翻译 <relative-time> 组件内的「N 小时前 / 昨天」（仓库列表、动态
+ *           时间等）；补仓库页词条（+ N releases、Sponsor this project 等）；
+ *           修复「1 contribution in the last year」等单数形式不命中的问题。
  *   v1.2.0  补充词库（智能体 / 安全与质量 / 代码审查 等）与动态句式（相对时间、
  *           归档提示、关注 / 贡献计数等）；加载后分阶段补扫 + 聚焦 / 可见性补扫，
  *           减少个别标签偶发回退英文的情况。
@@ -546,6 +552,139 @@
     'yesterday': '昨天',
     'last week': '上周',
     'last month': '上个月',
+
+    /* ---------- v1.3.0：个人主页 ---------- */
+    'navigation menu': '导航菜单',
+    'open navigation menu': '打开导航菜单',
+    'close navigation menu': '关闭导航菜单',
+    'search or jump to, type / to search': '搜索或跳转，输入 / 搜索',
+    'user profile': '用户资料',
+    'global': '全局',
+    'homepage': '主页',
+    'github homepage': 'GitHub 主页',
+    'external link': '外部链接',
+    'edit profile': '编辑个人资料',
+    'block or report user': '屏蔽或举报用户',
+    'block user': '屏蔽用户',
+    'follows you': '关注了你',
+    'popular repositories': '热门仓库',
+    'readme': '自述文件',
+    'contribution graph': '贡献图',
+    'day of week': '星期',
+    'learn how we count contributions': '了解贡献的统计方式',
+    'contribution settings': '贡献设置',
+    'activity overview': '动态概览',
+    'contributed to': '贡献于',
+    'show more activity': '显示更多动态',
+    'less': '少',
+    'no contributions.': '无贡献。',
+    'no contributions': '无贡献',
+    'low contributions.': '较少贡献。',
+    'medium-low contributions.': '中低贡献。',
+    'medium-high contributions.': '中高贡献。',
+    'high contributions.': '高贡献。',
+    'collapse': '折叠',
+    'expand': '展开',
+    'profile picture': '头像',
+    'public email': '公开邮箱',
+    'url': '网址',
+    'available for hire': '可雇佣',
+    'update profile': '更新个人资料',
+    'delete account': '删除账户',
+    'contributions & activity': '贡献与动态',
+
+    /* ---------- v1.3.0：月份 / 星期 ---------- */
+    'january': '1月',
+    'february': '2月',
+    'march': '3月',
+    'april': '4月',
+    'may': '5月',
+    'june': '6月',
+    'july': '7月',
+    'august': '8月',
+    'september': '9月',
+    'october': '10月',
+    'november': '11月',
+    'december': '12月',
+    'jan': '1月',
+    'feb': '2月',
+    'mar': '3月',
+    'apr': '4月',
+    'jun': '6月',
+    'jul': '7月',
+    'aug': '8月',
+    'sep': '9月',
+    'sept': '9月',
+    'oct': '10月',
+    'nov': '11月',
+    'dec': '12月',
+    'sunday': '周日',
+    'monday': '周一',
+    'tuesday': '周二',
+    'wednesday': '周三',
+    'thursday': '周四',
+    'friday': '周五',
+    'saturday': '周六',
+    'sun': '周日',
+    'mon': '周一',
+    'tue': '周二',
+    'tues': '周二',
+    'wed': '周三',
+    'thu': '周四',
+    'thur': '周四',
+    'thurs': '周四',
+    'fri': '周五',
+    'sat': '周六',
+
+    /* ---------- v1.3.0：屏蔽 / 举报对话框 ---------- */
+    'prevent this user from interacting with your repositories and sending you notifications.': '阻止此用户与你的仓库互动并向你发送通知。',
+    'learn more about': '了解更多关于',
+    'blocking users': '屏蔽用户',
+    'you must be logged in to block users.': '你必须登录后才能屏蔽用户。',
+    'close all issues, pull requests, and discussions opened by this user': '关闭此用户发起的所有议题、拉取请求和讨论',
+    'content in all repositories owned by your account will be closed.': '你账户拥有的所有仓库中的相关内容都将被关闭。',
+    'add an optional note': '添加可选备注',
+    'contact github support about this user\'s behavior.': '就此用户的行为联系 GitHub 支持。',
+    'reporting abuse': '举报滥用行为',
+
+    /* ---------- v1.3.0：页脚 / 错误 / 会话提示 ---------- */
+    'footer': '页脚',
+    'footer navigation': '页脚导航',
+    'community': '社区',
+    'contact': '联系',
+    'do not share my personal information': '请勿共享我的个人信息',
+    'uh oh!': '哎呀！',
+    'there was an error while loading.': '加载时出错了。',
+    'please reload this page': '请重新加载此页面',
+    'dismiss error': '关闭错误提示',
+    'dismiss alert': '忽略此提示',
+    'something went wrong, please refresh the page to try again.': '出错了，请刷新页面重试。',
+    'if the problem persists, check the': '如果问题持续存在，请查看',
+    'github status page': 'GitHub 状态页',
+    'contact support': '联系支持',
+    'you signed in with another tab or window.': '你在另一个标签页或窗口中登录了。',
+    'to refresh your session.': '请刷新你的会话。',
+    'you signed out in another tab or window.': '你在另一个标签页或窗口中退出了登录。',
+    'you switched accounts on another tab or window.': '你在另一个标签页或窗口中切换了账户。',
+    'you can\'t perform that action at this time.': '你目前无法执行此操作。',
+
+    /* ---------- v1.3.0：仓库页 / 文件列表补充 ---------- */
+    'folders and files': '文件夹与文件',
+    'last commit message': '最近提交信息',
+    'last commit date': '最近提交日期',
+    'view all files': '查看所有文件',
+    'repository files navigation': '仓库文件导航',
+    'repository files': '仓库文件',
+    'repository': '仓库',
+    'code of conduct': '行为准则',
+    'contributing': '贡献指南',
+    'latest': '最新',
+    'sponsor this project': '赞助此项目',
+    'learn more about github sponsors': '了解 GitHub 赞助者',
+    'view commit history for this file.': '查看此文件的提交历史。',
+    'this path skips through empty directories': '此路径会跳过空目录',
+    'you must be signed in to change notification settings': '你必须登录才能更改通知设置',
+    'you must be signed in to star a repository': '你必须登录才能星标仓库',
   };
 
   /* ==================== 2. 动态句式（正则） ====================
@@ -554,6 +693,95 @@
    *   1,234 Commits
    * 仅在「整个文本节点」匹配时生效。
    * --------------------------------------------------------- */
+
+  /* ---------- v1.3.0：日期 / 活动句辅助 ---------- */
+
+  const MONTH_NUM = {
+    january: 1, february: 2, march: 3, april: 4, may: 5, june: 6, july: 7,
+    august: 8, september: 9, october: 10, november: 11, december: 12,
+    jan: 1, feb: 2, mar: 3, apr: 4, jun: 6, jul: 7, aug: 8,
+    sep: 9, sept: 9, oct: 10, nov: 11, dec: 12,
+  };
+
+  const WEEKDAY_ZH = {
+    sunday: '周日', monday: '周一', tuesday: '周二', wednesday: '周三',
+    thursday: '周四', friday: '周五', saturday: '周六',
+    sun: '周日', mon: '周一', tue: '周二', tues: '周二',
+    wed: '周三', thu: '周四', thur: '周四', thurs: '周四',
+    fri: '周五', sat: '周六',
+  };
+
+  const REL_UNITS = { minute: '分钟', hour: '小时', day: '天', month: '个月', year: '年' };
+
+  function zhMonth(name) {
+    const n = MONTH_NUM[String(name).toLowerCase().replace(/\.$/, '')];
+    return n ? n + '月' : null;
+  }
+
+  /* 绝对日期："October 5, 2026" / "Sunday, October 5, 2026" / "Oct 3" / "October 2026" */
+  function zhDate(s) {
+    if (!s) return null;
+    const t = String(s).trim().replace(/\.$/, '');
+    let m = /^([A-Za-z]+), ([A-Za-z]+) (\d{1,2}), (\d{4})$/.exec(t);
+    if (m) {
+      const mo = zhMonth(m[2]);
+      if (!mo) return null;
+      const wd = WEEKDAY_ZH[m[1].toLowerCase()];
+      return m[4] + '年' + mo + parseInt(m[3], 10) + '日' + (wd ? '（' + wd + '）' : '');
+    }
+    m = /^([A-Za-z]+) (\d{1,2}), (\d{4})$/.exec(t);
+    if (m) {
+      const mo = zhMonth(m[1]);
+      return mo ? m[3] + '年' + mo + parseInt(m[2], 10) + '日' : null;
+    }
+    m = /^([A-Za-z]+\.?) (\d{1,2})$/.exec(t);
+    if (m) {
+      const mo = zhMonth(m[1]);
+      return mo ? mo + parseInt(m[2], 10) + '日' : null;
+    }
+    m = /^([A-Za-z]+\.?) (\d{4})$/.exec(t);
+    if (m) {
+      const mo = zhMonth(m[1]);
+      return mo ? m[2] + '年' + mo : null;
+    }
+    return null;
+  }
+
+  /* 绝对日期或相对时间（"2 days ago"），供 "Updated ..." 等句式使用 */
+  function zhDateTime(s) {
+    const abs = zhDate(s);
+    if (abs) return abs;
+    const t = String(s).trim().replace(/\.$/, '');
+    let m = /^(?:an?|one) (minute|hour|day|month|year)s? ago$/i.exec(t);
+    if (m) return '1 ' + REL_UNITS[m[1].toLowerCase()] + '前';
+    m = /^(\d[\d,]*) (minutes|hours|days|months|years) ago$/i.exec(t);
+    if (m) return m[1] + ' ' + REL_UNITS[m[2].toLowerCase().replace(/s$/, '')] + '前';
+    return null;
+  }
+
+  const ACTIVITY_VERBS = {
+    created: '创建', opened: '开启', started: '发起', reviewed: '审查',
+    published: '发布', closed: '关闭', merged: '合并', reported: '报告',
+  };
+
+  const ACTIVITY_NOUNS = {
+    commit: '个提交', commits: '个提交',
+    repository: '个仓库', repositories: '个仓库',
+    issue: '个议题', issues: '个议题',
+    'pull request': '个拉取请求', 'pull requests': '个拉取请求',
+    discussion: '个讨论', discussions: '个讨论',
+    branch: '个分支', branches: '个分支',
+    tag: '个标签', tags: '个标签',
+    release: '个发行版', releases: '个发行版',
+    'wiki page': '个 Wiki 页面', 'wiki pages': '个 Wiki 页面',
+    gist: '个 Gist', gists: '个 Gist',
+  };
+
+  function activityParts(verb, noun) {
+    const v = ACTIVITY_VERBS[String(verb).toLowerCase()];
+    const u = ACTIVITY_NOUNS[String(noun).toLowerCase()];
+    return v && u ? { v: v, u: u } : null;
+  }
 
   const RULES = [
     /* 分支状态提示 */
@@ -569,9 +797,9 @@
     [/^Fork your own copy of (.+)$/i, '复刻 $1 到你自己的账户'],
 
     /* 计数类 */
-    [/^Commits on (.+)$/i, '提交于 $1'],
-    [/^Updated (.+)$/i, '更新于 $1'],
-    [/^Last updated (.+)$/i, '最近更新于 $1'],
+    [/^Commits on (.+)$/i, function (m, d) { return '提交于 ' + (zhDateTime(d) || d); }],
+    [/^Updated (.+)$/i, function (m, d) { return '更新于 ' + (zhDateTime(d) || d); }],
+    [/^Last updated (.+)$/i, function (m, d) { return '最近更新于 ' + (zhDateTime(d) || d); }],
     [/^(\d[\d,]*) files? changed$/i, '$1 个文件已变更'],
     [/^(\d[\d,]*) additions?$/i, '$1 处新增'],
     [/^(\d[\d,]*) deletions?$/i, '$1 处删除'],
@@ -601,10 +829,52 @@
     [/^(\d[\d,]*) years? ago$/i, '$1 年前'],
     [/^(\d[\d,]*[kKmM]*) followers?$/i, '$1 位关注者'],
     [/^(\d[\d,]*[kKmM]*) following$/i, '$1 个正在关注'],
-    [/^(\d[\d,]*[kKmM]*) contributions in the last year$/i, '$1 次贡献（过去一年）'],
+    [/^(\d[\d,]*[kKmM]*) contributions? in the last year$/i, '$1 次贡献（过去一年）'],
     [/^(\d[\d,]*[kKmM]*) contributions?$/i, '$1 次贡献'],
     [/^(\d[\d,]*) files$/i, '$1 个文件'],
-    [/^This repository has been archived by the owner on (.+)\.\s*It is now read-only\.?$/i, '此仓库已被所有者于 $1 归档，现在是只读状态。'],
+    [/^This repository has been archived by the owner on (.+)\.\s*It is now read-only\.?$/i, function (m, d) { return '此仓库已被所有者于 ' + (zhDateTime(d) || d) + ' 归档，现在是只读状态。'; }],
+
+    /* ---------- v1.3.0：个人主页 / 活动列表 ---------- */
+    [/^(.+) doesn't have any public repositories yet\.$/i, '$1 还没有公开仓库。'],
+    [/^(.+) has no activity yet for this period\.$/i, '$1 在此时间段内还没有动态。'],
+    [/^and (\d[\d,]*) (?:other|more) repositories?$/i, '以及其他 $1 个仓库'],
+    [/^Contribution activity in (\d{4}), (\d+) of (\d+)$/, '$1年贡献动态（$2/$3）'],
+    [/^(\d+)% of commits in ([A-Za-z]+) were made to (.+)$/, function (m, pct, mon, repo) {
+      const zh = zhMonth(mon);
+      return zh ? zh + '有 ' + pct + '% 的提交提交至 ' + repo : m;
+    }],
+    [/^(Created|Opened|Started|Reviewed|Published|Closed|Merged|Reported) (\d[\d,]*) ([A-Za-z][A-Za-z ]*?) (?:in|to) (\d[\d,]*) (repositories|repository|repos|repo)$/i, function (m, verb, n, noun, cnt) {
+      const p = activityParts(verb, noun);
+      return p ? '在 ' + cnt + ' 个仓库中' + p.v + '了 ' + n + ' ' + p.u : m;
+    }],
+    [/^(Created|Opened|Started|Reviewed|Published|Closed|Merged|Reported) (\d[\d,]*) ([A-Za-z][A-Za-z ]*?) in$/i, function (m, verb, n, noun) {
+      const p = activityParts(verb, noun);
+      return p ? p.v + '了 ' + n + ' ' + p.u + '：' : m;
+    }],
+    [/^(Created|Opened|Started|Reviewed|Published|Closed|Merged|Reported) (\d[\d,]*) ([A-Za-z][A-Za-z ]*)$/i, function (m, verb, n, noun) {
+      const p = activityParts(verb, noun);
+      return p ? p.v + '了 ' + n + ' ' + p.u : m;
+    }],
+    [/^Block or report (.+)$/, '屏蔽或举报 $1'],
+    [/^View (.+)'s full-sized avatar$/i, '查看 $1 的完整头像'],
+    [/^Achievement: (.+)$/, '成就：$1'],
+    [/^No contributions on (.+)$/i, function (m, d) { return '无贡献：' + (zhDateTime(d) || d); }],
+    [/^(\d[\d,]*) contributions? on (.+)$/i, function (m, n, d) { return (zhDateTime(d) || d) + '：' + n + ' 次贡献'; }],
+    [/^This contribution was made on (.+)$/i, function (m, d) { return '此贡献发生于 ' + (zhDateTime(d) || d); }],
+    [/^(\d[\d,]*) contributions?\.$/i, '$1 次贡献。'],
+    [/^([A-Za-z]+) (\d{1,2}), (\d{4})$/, function (m) { return zhDate(m) || m; }],
+    [/^([A-Za-z]+), ([A-Za-z]+) (\d{1,2}), (\d{4})$/, function (m) { return zhDate(m) || m; }],
+    [/^([A-Za-z]+\.?) (\d{1,2})$/, function (m) { return zhDate(m) || m; }],
+    [/^([A-Za-z]+\.?) (\d{4})$/, function (m) { return zhDate(m) || m; }],
+
+    /* ---------- v1.3.0：仓库侧栏 / 文件列表补充 ---------- */
+    [/^\+ (\d[\d,]*) releases?$/i, '+ $1 个发行版'],
+    [/^\+ (\d[\d,]*) contributors?$/i, '+ $1 位贡献者'],
+    [/^([\d,]+) users? starred this repository$/i, '$1 位用户星标了此仓库'],
+    [/^Sponsor (.+)$/, '赞助 $1'],
+    [/^commits by (.+)$/i, '$1 的提交'],
+    [/^Commit ([0-9a-f]{7,40})$/i, '提交 $1'],
+    [/^([\w][\w./-]*) branch$/i, '$1 分支'],
   ];
 
   /* ==================== 3. 不翻译区域 ====================
@@ -672,7 +942,9 @@
 
     for (let i = 0; i < RULES.length; i++) {
       const re = RULES[i][0];
-      if (re.test(norm)) return norm.replace(re, RULES[i][1]);
+      if (!re.test(norm)) continue;
+      const out = norm.replace(re, RULES[i][1]);
+      if (typeof out === 'string' && out !== norm) return out;
     }
     return null;
   }
@@ -730,6 +1002,14 @@
     return false;
   }
 
+  /* 文本节点的跳过判断：影子根 / 文档片段里的顶层文本没有元素父级，不应因此跳过 */
+  function isSkippedNode(node) {
+    const el = node.parentElement;
+    if (el) return isSkipped(el);
+    const p = node.parentNode;
+    return !(p && (p.nodeType === Node.DOCUMENT_FRAGMENT_NODE || p.nodeType === Node.DOCUMENT_NODE));
+  }
+
   /* 属性翻译的跳过判断：表单控件自身放行（输入框的 placeholder 需要翻译），
    * 但位于跳过区域内部的控件（如筛选框、正文）仍然跳过。 */
   function isAttrSkipped(el) {
@@ -741,18 +1021,39 @@
     return !!el.closest(SKIP_SELECTOR);
   }
 
-  /* 翻译一棵子树（增量入口，也可传 document） */
+  /* Shadow DOM：GitHub 的时间组件（<relative-time> 等）把可见文本渲染在
+   * 影子根里，普通 DOM 遍历够不到；这里按已知宿主选择器补翻并监听其变化。 */
+  const SHADOW_HOSTS = 'relative-time, time-ago, time-until';
+  const watchedShadow = new WeakSet();
+
+  function watchShadowRoot(sr) {
+    if (watchedShadow.has(sr)) return;
+    watchedShadow.add(sr);
+    try {
+      observer.observe(sr, { childList: true, subtree: true, characterData: true });
+    } catch (_) {
+      /* 忽略 */
+    }
+  }
+
+  function translateShadowHost(host) {
+    if (!host || !host.shadowRoot || isSkipped(host)) return;
+    watchShadowRoot(host.shadowRoot);
+    translateRoot(host.shadowRoot);
+  }
+
+  /* 翻译一棵子树（增量入口，也可传 document / shadow root） */
   function translateRoot(root) {
     if (!enabled || !root) return;
     try {
       /* 单个文本节点 */
       if (root.nodeType === Node.TEXT_NODE) {
-        if (!isSkipped(root.parentElement)) translateTextNode(root);
+        if (!isSkippedNode(root)) translateTextNode(root);
         return;
       }
 
       const elRoot = root.nodeType === Node.DOCUMENT_NODE ? root.documentElement : root;
-      if (!elRoot || elRoot.nodeType !== Node.ELEMENT_NODE) return;
+      if (!elRoot || (elRoot.nodeType !== Node.ELEMENT_NODE && elRoot.nodeType !== Node.DOCUMENT_FRAGMENT_NODE)) return;
 
       /* 属性（表单控件自身放行，便于翻译 placeholder） */
       if (!isAttrSkipped(elRoot)) translateElementAttrs(elRoot);
@@ -765,13 +1066,17 @@
       /* 文本 */
       const walker = document.createTreeWalker(elRoot, NodeFilter.SHOW_TEXT, {
         acceptNode(n) {
-          const p = n.parentElement;
-          if (!p || isSkipped(p)) return NodeFilter.FILTER_REJECT;
+          if (isSkippedNode(n)) return NodeFilter.FILTER_REJECT;
           return NodeFilter.FILTER_ACCEPT;
         },
       });
       let n;
       while ((n = walker.nextNode())) translateTextNode(n);
+
+      /* Shadow DOM 宿主（含 elRoot 自身） */
+      if (elRoot.nodeType === Node.ELEMENT_NODE && elRoot.shadowRoot) translateShadowHost(elRoot);
+      const hosts = elRoot.querySelectorAll(SHADOW_HOSTS);
+      for (let i = 0; i < hosts.length; i++) translateShadowHost(hosts[i]);
     } catch (err) {
       console.debug('[' + SCRIPT_NAME + ']', err);
     }
@@ -982,7 +1287,7 @@
     /* 调试入口：控制台可用 window.__ghzh.setEnabled(false) 等 */
     try {
       window.__ghzh = {
-        version: '1.2.0',
+        version: '1.3.0',
         setEnabled,
         translateRoot,
         translateTitle,

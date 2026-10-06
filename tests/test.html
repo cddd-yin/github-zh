@@ -129,10 +129,10 @@
       assertEq(textOf('<span>3 commits ahead</span>'), '领先 3 个提交');
     });
     test('动态：Commits on Oct 5, 2026', function () {
-      assertEq(textOf('<div>Commits on Oct 5, 2026</div>'), '提交于 Oct 5, 2026');
+      assertEq(textOf('<div>Commits on Oct 5, 2026</div>'), '提交于 2026年10月5日');
     });
     test('动态：Updated 2 days ago', function () {
-      assertEq(textOf('<div>Updated 2 days ago</div>'), '更新于 2 days ago');
+      assertEq(textOf('<div>Updated 2 days ago</div>'), '更新于 2 天前');
     });
     test('动态：1,234 Stars → 1,234 个星标', function () {
       assertEq(textOf('<span>1,234 Stars</span>'), '1,234 个星标');
@@ -169,7 +169,7 @@
     test('动态：仓库已归档整句', function () {
       assertEq(
         textOf('<div>This repository has been archived by the owner on Oct 5, 2026. It is now read-only.</div>'),
-        '此仓库已被所有者于 Oct 5, 2026 归档，现在是只读状态。'
+        '此仓库已被所有者于 2026年10月5日 归档，现在是只读状态。'
       );
     });
     test('词库：Download raw file → 下载原始文件', function () {
@@ -177,6 +177,141 @@
     });
     test('词库：yesterday → 昨天', function () {
       assertEq(textOf('<span>yesterday</span>'), '昨天');
+    });
+
+    /* ============ B3. v1.3.0 新增：个人主页 ============ */
+    test('词库：Block or report user → 屏蔽或举报用户', function () {
+      assertEq(textOf('<button>Block or report user</button>'), '屏蔽或举报用户');
+    });
+    test('动态：Block or report maboloshi', function () {
+      assertEq(textOf('<span>Block or report maboloshi</span>'), '屏蔽或举报 maboloshi');
+    });
+    test('词库：Popular repositories → 热门仓库', function () {
+      assertEq(textOf('<h2>Popular repositories</h2>'), '热门仓库');
+    });
+    test('动态：无公开仓库提示', function () {
+      assertEq(textOf('<p>cddd-yin doesn\u2019t have any public repositories yet.</p>'), 'cddd-yin 还没有公开仓库。');
+    });
+    test('动态：1 contribution in the last year（单数修复）', function () {
+      assertEq(textOf('<span>1 contribution in the last year</span>'), '1 次贡献（过去一年）');
+    });
+    test('词库：月份 October → 10月；Oct 3 → 10月3日', function () {
+      assertEq(textOf('<span>October</span>'), '10月');
+      assertEq(textOf('<span>Oct 3</span>'), '10月3日');
+    });
+    test('词库：星期 Sunday → 周日', function () {
+      assertEq(textOf('<span>Sunday</span>'), '周日');
+      assertEq(textOf('<span>Wed</span>'), '周三');
+    });
+    test('动态：October 2026 → 2026年10月', function () {
+      assertEq(textOf('<button>October 2026</button>'), '2026年10月');
+    });
+    test('动态：完整日期 October 5, 2026 → 2026年10月5日', function () {
+      assertEq(textOf('<span>October 5, 2026</span>'), '2026年10月5日');
+    });
+    test('动态：带星期日期（Sunday, October 5, 2026）', function () {
+      assertEq(textOf('<span>Sunday, October 5, 2026</span>'), '2026年10月5日（周日）');
+    });
+    test('词库：贡献图标签（Contribution Graph / Day of Week / Less）', function () {
+      assertEq(textOf('<span>Contribution Graph</span>'), '贡献图');
+      assertEq(textOf('<span>Day of Week</span>'), '星期');
+      assertEq(textOf('<span>Less</span>'), '少');
+    });
+    test('词库：贡献等级说明', function () {
+      assertEq(textOf('<span>No contributions.</span>'), '无贡献。');
+      assertEq(textOf('<span>Medium-high contributions.</span>'), '中高贡献。');
+    });
+    test('词库：Show more activity / Activity overview', function () {
+      assertEq(textOf('<button>Show more activity</button>'), '显示更多动态');
+      assertEq(textOf('<h2>Activity overview</h2>'), '动态概览');
+    });
+    test('动态：活动句 Created 42 commits in 4 repositories', function () {
+      assertEq(textOf('<span>Created 42 commits in 4 repositories</span>'), '在 4 个仓库中创建了 42 个提交');
+    });
+    test('动态：活动句 Opened 2 pull requests in 1 repository', function () {
+      assertEq(textOf('<span>Opened 2 pull requests in 1 repository</span>'), '在 1 个仓库中开启了 2 个拉取请求');
+    });
+    test('动态：活动句 Created 1 repository', function () {
+      assertEq(textOf('<span>Created 1 repository</span>'), '创建了 1 个仓库');
+    });
+    test('动态：and 24 other repositories', function () {
+      assertEq(textOf('<a>and 24 other repositories</a>'), '以及其他 24 个仓库');
+    });
+    test('动态：This contribution was made on Oct 3', function () {
+      assertEq(textOf('<span>This contribution was made on Oct 3</span>'), '此贡献发生于 10月3日');
+    });
+    test('动态：提交占比句（58% of commits in October …）', function () {
+      assertEq(
+        textOf('<div>58% of commits in October were made to maboloshi/scoop-private</div>'),
+        '10月有 58% 的提交提交至 maboloshi/scoop-private'
+      );
+    });
+    test('动态：Contribution activity in 2026, 1 of 13', function () {
+      assertEq(textOf('<a>Contribution activity in 2026, 1 of 13</a>'), '2026年贡献动态（1/13）');
+    });
+    test('不翻译：活动规则不误伤未知名词（Created 2 files）', function () {
+      assertEq(textOf('<span>Created 2 files</span>'), 'Created 2 files');
+    });
+    test('词库：Expand / Collapse / README', function () {
+      assertEq(textOf('<button>Expand</button>'), '展开');
+      assertEq(textOf('<button>Collapse</button>'), '折叠');
+      assertEq(textOf('<span>README</span>'), '自述文件');
+    });
+    test('属性：Achievement: Starstruck → 成就：Starstruck', function () {
+      var box = translated('<img alt="Achievement: Starstruck">');
+      assertEq(box.firstElementChild.getAttribute('alt'), '成就：Starstruck');
+    });
+    test('属性：查看完整头像', function () {
+      var box = translated('<img alt="View maboloshi\u2019s full-sized avatar">');
+      assertEq(box.firstElementChild.getAttribute('alt'), '查看 maboloshi 的完整头像');
+    });
+    test('属性：Footer 导航 aria-label', function () {
+      var box = translated('<nav aria-label="Footer"></nav>');
+      assertEq(box.firstElementChild.getAttribute('aria-label'), '页脚');
+    });
+    test('词库：页脚（Community / Contact）', function () {
+      assertEq(textOf('<a>Community</a>'), '社区');
+      assertEq(textOf('<a>Contact</a>'), '联系');
+    });
+    test('影子 DOM：relative-time 内的相对时间（2 days ago → 2 天前）', function () {
+      var box = document.createElement('div');
+      var host = document.createElement('relative-time');
+      var sr = host.attachShadow({ mode: 'open' });
+      sr.textContent = '2 days ago';
+      box.appendChild(host);
+      g.translateRoot(box);
+      assertEq(sr.textContent.trim(), '2 天前');
+    });
+    test('影子 DOM：yesterday（组件的另一种文案）', function () {
+      var box = document.createElement('div');
+      var host = document.createElement('relative-time');
+      var sr = host.attachShadow({ mode: 'open' });
+      sr.textContent = 'yesterday';
+      box.appendChild(host);
+      g.translateRoot(box);
+      assertEq(sr.textContent.trim(), '昨天');
+    });
+    test('动态：+ 519 releases / + 3,832 contributors', function () {
+      assertEq(textOf('<a>+ 519 releases</a>'), '+ 519 个发行版');
+      assertEq(textOf('<span>+ 3,832 contributors</span>'), '+ 3,832 位贡献者');
+    });
+    test('词库：Folders and files / Last commit message / Last commit date', function () {
+      assertEq(textOf('<th>Folders and files</th>'), '文件夹与文件');
+      assertEq(textOf('<th>Last commit message</th>'), '最近提交信息');
+      assertEq(textOf('<th>Last commit date</th>'), '最近提交日期');
+    });
+    test('词库：Code of conduct / Contributing / Latest', function () {
+      assertEq(textOf('<a>Code of conduct</a>'), '行为准则');
+      assertEq(textOf('<a>Contributing</a>'), '贡献指南');
+      assertEq(textOf('<span>Latest</span>'), '最新');
+    });
+    test('动态与属性：commits by / Sponsor / starred', function () {
+      assertEq(textOf('<span>commits by araujogui</span>'), 'araujogui 的提交');
+      assertEq(textOf('<a aria-label="Sponsor @nodejs"></a>'), '');
+      var box = translated('<a aria-label="Sponsor @nodejs"></a>');
+      assertEq(box.firstElementChild.getAttribute('aria-label'), '赞助 @nodejs');
+      var box2 = translated('<button aria-label="122,383 users starred this repository"></button>');
+      assertEq(box2.firstElementChild.getAttribute('aria-label'), '122,383 位用户星标了此仓库');
     });
 
     /* ============ C. 跳过区域（不误伤） ============ */

@@ -66,10 +66,16 @@
   await sleep(600);
 
   report.probes = readProbes();
+  /* README 完整性：正文不得出现中文（翻译需要跳过它），且首段文本保持原样。
+   * 注意：innerText 长度会随页面后续渲染波动，不做跨时刻相等断言。 */
+  var readmeNow = mb ? mb.innerText : null;
+  var cjkCount = readmeNow ? (readmeNow.match(/[\u4e00-\u9fff]/g) || []).length : -1;
   report.readme = {
     beforeLen: before ? before.len : null,
-    afterLen: mb ? mb.innerText.length : -1,
-    unchanged: !!(before && mb && before.len === mb.innerText.length && before.head === mb.innerText.slice(0, 200))
+    afterLen: readmeNow ? readmeNow.length : -1,
+    headSame: !!(before && readmeNow && before.head === readmeNow.slice(0, 200)),
+    cjkInReadme: cjkCount,
+    unchanged: !!(before && readmeNow && cjkCount === 0 && before.head === readmeNow.slice(0, 200))
   };
 
   report.counts = {
