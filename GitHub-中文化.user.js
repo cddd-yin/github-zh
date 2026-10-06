@@ -2,7 +2,7 @@
 // @name         GitHub 中文化 · 界面翻译
 // @name:en      GitHub Chinese UI
 // @namespace    https://github.com/cddd-yin/github-zh
-// @version      1.3.1
+// @version      1.4.0
 // @homepageURL  https://github.com/cddd-yin/github-zh
 // @supportURL   https://github.com/cddd-yin/github-zh/issues
 // @updateURL    https://raw.githubusercontent.com/cddd-yin/github-zh/main/GitHub-%E4%B8%AD%E6%96%87%E5%8C%96.user.js
@@ -29,6 +29,14 @@
  *   4. 油猴菜单可随时开关，关闭时还原成英文。
  *
  * 更新记录：
+ *   v1.4.0  词库再扩 120+ 条并新增句法与属性规则：动作（Actions）页
+ *           （Workflow / Event / Actor / 运行时长 / 工作流运行计数）、
+ *           议题与 PR 列表（全部/搜索/各类「按…筛选」、排序、分页、
+ *           Assigned to me 等）、发行版页（跳转、Assets、released this、
+ *           Tag、签名校验）、全站页脚与站点地图（平台/功能/资源/公司/社交
+ *           等栏目与社交媒体链接）；新增「on <日期>」「<月 日, 年, 时:分 时区>」
+ *           日期句、运行时长（3m 40s → 3 分 40 秒）、评论计数与检查通过计数；
+ *           同步扩充单元断言。
  *   v1.3.1  修复登录态空状态提示（You don't have any public repositories yet. /
  *           You don't have any activity yet for this period. 等）。
  *   v1.3.0  个人主页专项：补齐主页词汇（屏蔽 / 热门仓库 / 贡献图 / 活动概览 /
@@ -687,6 +695,110 @@
     'this path skips through empty directories': '此路径会跳过空目录',
     'you must be signed in to change notification settings': '你必须登录才能更改通知设置',
     'you must be signed in to star a repository': '你必须登录才能星标仓库',
+
+    /* ---------- v1.4.0：仓库 / 文件 / 操作 ---------- */
+    'go to branches page': '转到分支页面',
+    'go to tags page': '转到标签页面',
+    'not available': '不可用',
+    'loading content...': '正在加载内容…',
+    'commit message': '提交信息',
+    'workflow': '工作流',
+    'event': '事件',
+    'actor': '执行者',
+    'showing runs from all workflows': '显示所有工作流的运行',
+    'show options': '显示选项',
+    'run duration': '运行时长',
+    'actions workflows': '操作工作流',
+    'bot': '机器人',
+    'scheduled': '定时',
+    'synchronize by': '由以下用户同步',
+    'labeled by': '由以下用户添加标签',
+    'change the type filter': '更改类型筛选',
+    'state': '状态',
+    'pagination': '分页',
+    'previous page': '上一页',
+    'next page': '下一页',
+
+    /* ---------- v1.4.0：议题 / 拉取请求列表 ---------- */
+    'all issues': '所有议题',
+    'all pull requests': '所有拉取请求',
+    'search issues': '搜索议题',
+    'search pull requests': '搜索拉取请求',
+    'filter by author': '按作者筛选',
+    'filter by label': '按标签筛选',
+    'filter by labels': '按标签筛选',
+    'filter by projects': '按项目筛选',
+    'filter by milestone': '按里程碑筛选',
+    'filter by milestones': '按里程碑筛选',
+    'filter by assignee': '按受理人筛选',
+    'filter by review': '按审查筛选',
+    'filter by reviews': '按审查筛选',
+    'assigned to me': '分配给我',
+    'created by me': '由我创建',
+    'mentioned': '提及我的',
+    'recent activity': '最近动态',
+    'opened': '已开启',
+    'issue filters': '议题筛选',
+    'pull request filters': '拉取请求筛选',
+    'issue list controls': '议题列表控件',
+    'issues display density': '议题显示密度',
+    'pull requests display density': '拉取请求显示密度',
+    'issues sidebar navigation': '议题侧边栏导航',
+    'pinned views': '固定视图',
+    'suggestions': '建议',
+    'feedback': '反馈',
+    'open pull request': '打开的拉取请求',
+    'draft pull request': '草稿拉取请求',
+    'member': '成员',
+
+    /* ---------- v1.4.0：发行版 ---------- */
+    'jump to release': '跳转到发行版',
+    'released this': '发布了此版本',
+    'assets': '资源',
+    'tag': '标签',
+    'verified commit signature': '已验证的提交签名',
+    'releases and tags': '发行版与标签',
+    'release list navigation': '发行版列表导航',
+    'release list pagination': '发行版列表分页',
+
+    /* ---------- v1.4.0：页脚 / 站点地图 ---------- */
+    'find code, projects, and people on github:': '在 GitHub 上查找代码、项目和用户：',
+    'github status': 'GitHub 状态',
+    'the developer newsletter': '开发者通讯',
+    'get tips, technical guides, and best practices. twice a month. right in your inbox.': '每月两期，直接在收件箱中获取技巧、技术指南与最佳实践。',
+    'site-wide links': '站点链接',
+    'legal and resource links': '法律与资源链接',
+    "github's social media links": 'GitHub 社交媒体链接',
+    'go to github homepage': '转到 GitHub 主页',
+    'english': '英语',
+    'english - select language': '英语 - 选择语言',
+    'platform': '平台',
+    'features': '功能',
+    'enterprise': '企业',
+    'team': '团队',
+    'resources': '资源',
+    'roadmap': '路线图',
+    'compare github': '对比 GitHub',
+    'ecosystem': '生态',
+    'developer api': '开发者 API',
+    'partners': '合作伙伴',
+    'education': '教育',
+    'github mobile': 'GitHub 移动版',
+    'github marketplace': 'GitHub 市场',
+    'mcp registry': 'MCP 注册表',
+    'community forum': '社区论坛',
+    'professional services': '专业服务',
+    'premium support': '高级支持',
+    'skills': '技能',
+    'what is git?': '什么是 Git？',
+    'sitemap': '网站地图',
+    'why github': '为什么选择 GitHub',
+    'customer stories': '客户案例',
+    'the readme project': 'ReadME 项目',
+    'careers': '招聘',
+    'inclusion': '包容性',
+    'social impact': '社会影响',
+    'shop': '商店',
   };
 
   /* ==================== 2. 动态句式（正则） ====================
@@ -880,6 +992,42 @@
     [/^commits by (.+)$/i, '$1 的提交'],
     [/^Commit ([0-9a-f]{7,40})$/i, '提交 $1'],
     [/^([\w][\w./-]*) branch$/i, '$1 分支'],
+
+    /* ---------- v1.4.0：计数 / 时长 / 日期时间 ---------- */
+    [/^([\d,]+)\+? workflow runs?$/i, '$1 次工作流运行'],
+    [/^([\d,]+) people reacted$/i, '$1 人作出了反应'],
+    [/^([\d,]+) comments?$/i, '$1 条评论'],
+    [/^([\d,]+)\/([\d,]+) checks? passing$/i, '$1/$2 项检查通过'],
+    [/^(\d+)h (\d+)m(?: (\d+)s)?$/i, function (m, h, mi, s) { return h + ' 小时 ' + mi + ' 分' + (s ? ' ' + s + ' 秒' : ''); }],
+    [/^(\d+)m (\d+)s$/i, '$1 分 $2 秒'],
+    [/^(\d+)h$/i, '$1 小时'],
+    [/^(\d+)m$/i, '$1 分'],
+    [/^(\d+)s$/i, '$1 秒'],
+    [/^([A-Za-z]+) (\d{1,2}), (\d{4}), (\d{1,2}:\d{2}) (GMT[+-]\d+)$/, function (m, mon, d, y, hm, tz) {
+      const zh = zhMonth(mon);
+      return zh ? y + '年' + zh + parseInt(d, 10) + '日 ' + hm + ' ' + tz : m;
+    }],
+    [/^on (.+)$/, function (m, rest) { const d = zhDateTime(rest); return d ? '于 ' + d : m; }],
+
+    /* ---------- v1.4.0：筛选 / 排序 / 分页 ---------- */
+    [/^Filter by author (.+)$/, '按作者筛选：$1'],
+    [/^Filter by labels? (.+)$/, '按标签筛选：$1'],
+    [/^Filter by assignee (.+)$/, '按受理人筛选：$1'],
+    [/^Filter by review: (.+)$/, '按审查筛选：$1'],
+    [/^Sort by (.+?) (ascending|descending)$/i, function (m, key, dir) {
+      const zh = DICT[key.toLowerCase()] || key;
+      return '按' + zh + (dir.toLowerCase() === 'descending' ? '降序' : '升序') + '排序';
+    }],
+    [/^Page (\d+)\.*$/, '第 $1 页'],
+
+    /* ---------- v1.4.0：带仓库 / 组织名的标题 ---------- */
+    [/^Actions: (.+)$/, '操作：$1'],
+    [/^Releases: (.+)$/, '发行版：$1'],
+    [/^Issues: (.+)$/, '议题：$1'],
+    [/^Pull requests: (.+)$/i, '拉取请求：$1'],
+    [/^This user has previously committed to the (.+) repository\.$/, '此用户此前曾向 $1 仓库提交过。'],
+    [/^This user is a member of the (.+) organization\.$/, '此用户是 $1 组织的成员。'],
+    [/^GitHub on (.+)$/, 'GitHub 在 $1'],
   ];
 
   /* ==================== 3. 不翻译区域 ====================
@@ -1292,7 +1440,7 @@
     /* 调试入口：控制台可用 window.__ghzh.setEnabled(false) 等 */
     try {
       window.__ghzh = {
-        version: '1.3.1',
+        version: '1.4.0',
         setEnabled,
         translateRoot,
         translateTitle,

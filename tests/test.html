@@ -318,6 +318,102 @@
       assertEq(box2.firstElementChild.getAttribute('aria-label'), '122,383 位用户星标了此仓库');
     });
 
+    /* ============ B4. v1.4.0 新增 ============ */
+    test('词库：Actions 页表头（Workflow / Event / Actor）', function () {
+      assertEq(textOf('<th>Workflow</th>'), '工作流');
+      assertEq(textOf('<th>Event</th>'), '事件');
+      assertEq(textOf('<th>Actor</th>'), '执行者');
+    });
+    test('动态：2,500+ workflow runs → 2,500 次工作流运行', function () {
+      assertEq(textOf('<span>2,500+ workflow runs</span>'), '2,500 次工作流运行');
+    });
+    test('动态：运行时长 3m 40s → 3 分 40 秒', function () {
+      assertEq(textOf('<span>3m 40s</span>'), '3 分 40 秒');
+      assertEq(textOf('<span>42m 40s</span>'), '42 分 40 秒');
+      assertEq(textOf('<span>45s</span>'), '45 秒');
+    });
+    test('词库：Showing runs from all workflows', function () {
+      assertEq(textOf('<div>Showing runs from all workflows</div>'), '显示所有工作流的运行');
+      assertEq(textOf('<span>Show options</span>'), '显示选项');
+      assertEq(textOf('<span>Run duration</span>'), '运行时长');
+      assertEq(textOf('<span>Loading content...</span>'), '正在加载内容…');
+    });
+    test('词库：议题 / PR 列表（全部、搜索、成员、opened）', function () {
+      assertEq(textOf('<span>All pull requests</span>'), '所有拉取请求');
+      assertEq(textOf('<span>Search issues</span>'), '搜索议题');
+      assertEq(textOf('<span>Member</span>'), '成员');
+      assertEq(textOf('<span>opened</span>'), '已开启');
+    });
+    test('属性：Filter by author vedchaudhari', function () {
+      var box = translated('<button aria-label="Filter by author vedchaudhari"></button>');
+      assertEq(box.firstElementChild.getAttribute('aria-label'), '按作者筛选：vedchaudhari');
+    });
+    test('属性：Filter by label sqlite', function () {
+      var box = translated('<button aria-label="Filter by label sqlite"></button>');
+      assertEq(box.firstElementChild.getAttribute('aria-label'), '按标签筛选：sqlite');
+    });
+    test('属性：Sort by Newest descending', function () {
+      var box = translated('<button aria-label="Sort by Newest descending"></button>');
+      assertEq(box.firstElementChild.getAttribute('aria-label'), '按最新降序排序');
+    });
+    test('属性：Previous page / Next page / Page 7', function () {
+      assertEq(translated('<a aria-label="Previous page"></a>').firstElementChild.getAttribute('aria-label'), '上一页');
+      assertEq(translated('<a aria-label="Next page"></a>').firstElementChild.getAttribute('aria-label'), '下一页');
+      assertEq(translated('<a aria-label="Page 7..."></a>').firstElementChild.getAttribute('aria-label'), '第 7 页');
+    });
+    test('动态：on Oct 6, 2026 → 于 2026年10月6日', function () {
+      assertEq(textOf('<span>on Oct 6, 2026</span>'), '于 2026年10月6日');
+    });
+    test('属性：日期时间 Oct 6, 2026, 13:55 GMT+8', function () {
+      var box = translated('<relative-time title="Oct 6, 2026, 13:55 GMT+8"></relative-time>');
+      assertEq(box.firstElementChild.getAttribute('title'), '2026年10月6日 13:55 GMT+8');
+    });
+    test('词库：发行版页（released this / Assets / Jump to release）', function () {
+      assertEq(textOf('<span>released this</span>'), '发布了此版本');
+      assertEq(textOf('<div>Assets</div>'), '资源');
+      assertEq(textOf('<a>Jump to release</a>'), '跳转到发行版');
+    });
+    test('动态：14 people reacted → 14 人作出了反应', function () {
+      assertEq(textOf('<span>14 people reacted</span>'), '14 人作出了反应');
+    });
+    test('词库与属性：Go to Branches page / Not available', function () {
+      assertEq(translated('<a aria-label="Go to Branches page"></a>').firstElementChild.getAttribute('aria-label'), '转到分支页面');
+      assertEq(translated('<span title="Not available"></span>').firstElementChild.getAttribute('title'), '不可用');
+    });
+    test('动态：37/37 checks passing', function () {
+      assertEq(textOf('<span>37/37 checks passing</span>'), '37/37 项检查通过');
+    });
+    test('词库：页脚栏目与站点地图', function () {
+      assertEq(textOf('<a>Platform</a>'), '平台');
+      assertEq(textOf('<a>Features</a>'), '功能');
+      assertEq(textOf('<a>Sitemap</a>'), '网站地图');
+      assertEq(textOf('<a>Shop</a>'), '商店');
+    });
+    test('动态：GitHub on LinkedIn', function () {
+      assertEq(textOf('<a>GitHub on LinkedIn</a>'), 'GitHub 在 LinkedIn');
+    });
+    test('词库：English - Select language', function () {
+      assertEq(textOf('<button>English - Select language</button>'), '英语 - 选择语言');
+      assertEq(textOf('<span>English</span>'), '英语');
+    });
+    test('动态：成员 / 曾提交提示', function () {
+      assertEq(
+        textOf('<span>This user is a member of the nodejs organization.</span>'),
+        '此用户是 nodejs 组织的成员。'
+      );
+      assertEq(
+        textOf('<span>This user has previously committed to the node repository.</span>'),
+        '此用户此前曾向 node 仓库提交过。'
+      );
+    });
+    test('属性：1 comments → 1 条评论', function () {
+      var box = translated('<div aria-label="1 comments"></div>');
+      assertEq(box.firstElementChild.getAttribute('aria-label'), '1 条评论');
+    });
+    test('不翻译：分支名 main 不被改动', function () {
+      assertEq(textOf('<span>main</span>'), 'main');
+    });
+
     /* ============ C. 跳过区域（不误伤） ============ */
     test('跳过：行内代码 code', function () {
       assertEq(textOf('<p><code>Commit</code></p>'), 'Commit');
