@@ -2,7 +2,7 @@
 // @name         GitHub 中文化 · 界面翻译
 // @name:en      GitHub Chinese UI
 // @namespace    https://github.com/cddd-yin/github-zh
-// @version      1.1.0
+// @version      1.2.0
 // @homepageURL  https://github.com/cddd-yin/github-zh
 // @supportURL   https://github.com/cddd-yin/github-zh/issues
 // @updateURL    https://raw.githubusercontent.com/cddd-yin/github-zh/main/GitHub-%E4%B8%AD%E6%96%87%E5%8C%96.user.js
@@ -29,6 +29,9 @@
  *   4. 油猴菜单可随时开关，关闭时还原成英文。
  *
  * 更新记录：
+ *   v1.2.0  补充词库（智能体 / 安全与质量 / 代码审查 等）与动态句式（相对时间、
+ *           归档提示、关注 / 贡献计数等）；加载后分阶段补扫 + 聚焦 / 可见性补扫，
+ *           减少个别标签偶发回退英文的情况。
  *   v1.1.0  修复输入框 placeholder 未翻译的问题（表单控件自身放行）；
  *           补充词库；新增 tests/ 自动化测试；接入 GitHub 仓库更新地址。
  * ========================================================================= */
@@ -516,6 +519,33 @@
     'blog': '博客',
     'contact github': '联系 GitHub',
     'manage cookies': '管理 Cookie',
+
+    /* ---------- v1.2.0 补充 ---------- */
+    'agents': '智能体',
+    'security and quality': '安全与质量',
+    'branch': '分支',
+    'contributor': '贡献者',
+    'watching': '关注',
+    'codespaces': '代码空间',
+    'code review': '代码审查',
+    'code scanning': '代码扫描',
+    'applications': '应用',
+    'authentication': '身份验证',
+    'billing': '账单',
+    'copy raw file': '复制原始文件',
+    'download raw file': '下载原始文件',
+    'outline': '大纲',
+    'edit file': '编辑文件',
+    'view commit details': '查看提交详情',
+    'ready for review': '可审查',
+    'convert to draft': '转为草稿',
+    'linked pull requests': '关联的拉取请求',
+    'development': '开发',
+    'get started': '开始使用',
+    'quick setup': '快速设置',
+    'yesterday': '昨天',
+    'last week': '上周',
+    'last month': '上个月',
   };
 
   /* ==================== 2. 动态句式（正则） ====================
@@ -556,6 +586,25 @@
 
     /* 加载占位 */
     [/^Loading\.{0,3}$/i, '加载中…'],
+
+    /* ---------- v1.2.0 补充：相对时间与计数 ---------- */
+    [/^just now$/i, '刚刚'],
+    [/^an? minute ago$/i, '1 分钟前'],
+    [/^an? hour ago$/i, '1 小时前'],
+    [/^an? day ago$/i, '1 天前'],
+    [/^an? month ago$/i, '1 个月前'],
+    [/^an? year ago$/i, '1 年前'],
+    [/^(\d[\d,]*) minutes? ago$/i, '$1 分钟前'],
+    [/^(\d[\d,]*) hours? ago$/i, '$1 小时前'],
+    [/^(\d[\d,]*) days? ago$/i, '$1 天前'],
+    [/^(\d[\d,]*) months? ago$/i, '$1 个月前'],
+    [/^(\d[\d,]*) years? ago$/i, '$1 年前'],
+    [/^(\d[\d,]*[kKmM]*) followers?$/i, '$1 位关注者'],
+    [/^(\d[\d,]*[kKmM]*) following$/i, '$1 个正在关注'],
+    [/^(\d[\d,]*[kKmM]*) contributions in the last year$/i, '$1 次贡献（过去一年）'],
+    [/^(\d[\d,]*[kKmM]*) contributions?$/i, '$1 次贡献'],
+    [/^(\d[\d,]*) files$/i, '$1 个文件'],
+    [/^This repository has been archived by the owner on (.+)\.\s*It is now read-only\.?$/i, '此仓库已被所有者于 $1 归档，现在是只读状态。'],
   ];
 
   /* ==================== 3. 不翻译区域 ====================
@@ -915,6 +964,14 @@
     document.addEventListener('pjax:end', onNavigate, true);
     document.addEventListener('soft-nav:end', onNavigate, true);
 
+    /* 加载后分阶段补扫：GitHub 分阶段渲染，个别节点首扫时还没出现、
+     * 或被框架重新渲染回英文，这里做几次轻量补扫让最终状态稳定。 */
+    [1200, 3500, 8000, 16000].forEach((ms) => setTimeout(() => schedule(document), ms));
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) schedule(document);
+    });
+    window.addEventListener('focus', () => schedule(document));
+
     if (enabled) {
       translateRoot(document);
       translateTitle();
@@ -925,6 +982,7 @@
     /* 调试入口：控制台可用 window.__ghzh.setEnabled(false) 等 */
     try {
       window.__ghzh = {
+        version: '1.2.0',
         setEnabled,
         translateRoot,
         translateTitle,

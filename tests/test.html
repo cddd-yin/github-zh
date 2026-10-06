@@ -138,6 +138,47 @@
       assertEq(textOf('<span>1,234 Stars</span>'), '1,234 个星标');
     });
 
+    /* ============ B2. v1.2.0 新增 ============ */
+    test('动态：33 minutes ago → 33 分钟前', function () {
+      assertEq(textOf('<span>33 minutes ago</span>'), '33 分钟前');
+    });
+    test('动态：an hour ago → 1 小时前', function () {
+      assertEq(textOf('<span>an hour ago</span>'), '1 小时前');
+    });
+    test('动态：just now → 刚刚', function () {
+      assertEq(textOf('<span>just now</span>'), '刚刚');
+    });
+    test('动态：1,234 followers → 1,234 位关注者', function () {
+      assertEq(textOf('<span>1,234 followers</span>'), '1,234 位关注者');
+    });
+    test('动态：1,234 contributions in the last year', function () {
+      assertEq(textOf('<span>1,234 contributions in the last year</span>'), '1,234 次贡献（过去一年）');
+    });
+    test('词库：Agents → 智能体', function () {
+      assertEq(textOf('<a>Agents</a>'), '智能体');
+    });
+    test('词库：Security and quality → 安全与质量', function () {
+      assertEq(textOf('<a>Security and quality</a>'), '安全与质量');
+    });
+    test('词库：Branch → 分支（修复 1 Branch 残留）', function () {
+      assertEq(textOf('<span>Branch</span>'), '分支');
+    });
+    test('词库：Convert to draft → 转为草稿', function () {
+      assertEq(textOf('<button>Convert to draft</button>'), '转为草稿');
+    });
+    test('动态：仓库已归档整句', function () {
+      assertEq(
+        textOf('<div>This repository has been archived by the owner on Oct 5, 2026. It is now read-only.</div>'),
+        '此仓库已被所有者于 Oct 5, 2026 归档，现在是只读状态。'
+      );
+    });
+    test('词库：Download raw file → 下载原始文件', function () {
+      assertEq(textOf('<button>Download raw file</button>'), '下载原始文件');
+    });
+    test('词库：yesterday → 昨天', function () {
+      assertEq(textOf('<span>yesterday</span>'), '昨天');
+    });
+
     /* ============ C. 跳过区域（不误伤） ============ */
     test('跳过：行内代码 code', function () {
       assertEq(textOf('<p><code>Commit</code></p>'), 'Commit');

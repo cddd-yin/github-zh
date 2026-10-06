@@ -75,16 +75,18 @@ try {
   $ws = [System.Net.WebSockets.ClientWebSocket]::new()
   $ws.ConnectAsync([Uri]$tab.webSocketDebuggerUrl, [Threading.CancellationToken]::None).Wait() | Out-Null
 
-  # 3. wait for load
+  # 3. wait for the page to be usable (GitHub 页面经常迟迟不触发 load，容忍 interactive)
   $state = ''
   $deadline = (Get-Date).AddSeconds($LoadTimeoutSec)
   while ((Get-Date) -lt $deadline) {
-    $eval = Eval-Expr -Ws $ws -Id 1 -Expr 'document.readyState + "|" + location.href'
+    $eval = Eval-Expr -Ws $ws -Id 1 -Expr 'document.readyState + "|" + location.href + "|" + (document.body ? document.body.innerText.length : 0)'
     $state = [string]$eval.result.result.value
-    if ($state -like 'complete|https://github.com/*') { break }
+    $parts = $state.Split('|')
+    if ($parts.Count -ge 3 -and $parts[0] -ne 'loading' -and $parts[1] -like 'https://github.com/*' -and $parts[2] -match '^\d+$' -and [int]$parts[2] -gt 3000) { break }
     Start-Sleep -Milliseconds 700
   }
-  if ($state -notlike 'complete|https://github.com/*') { throw ('page did not load: ' + $state) }
+  $parts = $state.Split('|')
+  if (-not ($parts.Count -ge 3 -and $parts[0] -ne 'loading' -and $parts[1] -like 'https://github.com/*' -and $parts[2] -match '^\d+$' -and [int]$parts[2] -gt 3000)) { throw ('page did not load: ' + $state) }
 
   # 4. sample README before injection
   $beforeExpr = 'var mb = document.querySelector("." + "markdown-body"); window.__ghzhBefore = JSON.stringify({ len: mb ? mb.innerText.length : -1, head: mb ? mb.innerText.slice(0, 200) : null }); "ok"'

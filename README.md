@@ -3,7 +3,7 @@
 把 GitHub 的**界面词汇**翻译成中文的 Tampermonkey（油猴）脚本。
 只翻界面，不碰代码、文件名、README / 议题正文、提交信息和用户名——比浏览器整页机翻干净得多。
 
-- 脚本文件：`GitHub-中文化.user.js`（v1.1.0）
+- 脚本文件：`GitHub-中文化.user.js`（v1.2.0）
 - 仓库：https://github.com/cddd-yin/github-zh
 
 ## 为什么不用浏览器翻译？
@@ -51,9 +51,9 @@ Chrome 新版默认**禁止油猴执行脚本**：请在 `chrome://extensions` �
 
 ## 测试与验证
 
-| 测试 | 运行方式 | 实测结果（2026-10-05） |
+| 测试 | 运行方式 | 实测结果（2026-10-06） |
 | --- | --- | --- |
-| 单元断言 ×31 | 启动 `tests\serve.ps1` 后打开 `http://127.0.0.1:8787/tests/test.html` | ✅ 31 / 31 通过 |
+| 单元断言 ×43 | 启动 `tests\serve.ps1` 后打开 `http://127.0.0.1:8787/tests/test.html` | ✅ 43 / 43 通过 |
 | 模拟页面预览 | `http://127.0.0.1:8787/tests/demo.html` | 界面词变中文；代码、README 正文、文件名保持英文 |
 | 端到端（真实 GitHub） | `powershell -ExecutionPolicy Bypass -File tests\e2e\run.ps1` | ✅ nodejs/node：导航 / 按钮 / 占位符全部中文；README 长度不变；代码、文件名、正文探针均未被改动；开关可还原 |
 
@@ -65,7 +65,7 @@ Chrome 新版默认**禁止油猴执行脚本**：请在 `chrome://extensions` �
 ```
 GitHub-中文化.user.js    主脚本（安装这个）
 tests/
-  test.html              31 项自动化断言
+  test.html              43 项自动化断言
   demo.html              模拟 GitHub 页面（可视化预览）
   serve.ps1              本地静态服务器（127.0.0.1:8787）
   e2e/
@@ -83,6 +83,7 @@ LICENSE
 
 ## 更新日志
 
+- **v1.2.0**：词库扩充至 450 条（新增智能体 / 安全与质量 / 代码审查 / 大纲 等）；动态句式增加相对时间（`33 minutes ago → 33 分钟前`）、归档提示、关注 / 贡献计数；加载后分阶段补扫 + 聚焦 / 可见性补扫，减少个别标签偶发回退英文；E2E 测试脚本容忍长加载页面，更健壮。
 - **v1.1.0**：修复输入框 `placeholder` 未翻译的问题（表单控件自身放行）；补充词库（概览 / 仓库 / 发行版 / Actions 等）；新增 `tests/` 自动化测试与模拟预览页；接入 GitHub 仓库与更新地址。
 - **v1.0.0**：初版。
 
