@@ -2,7 +2,7 @@
 // @name         GitHub 中文化 · 界面翻译
 // @name:en      GitHub Chinese UI
 // @namespace    https://github.com/cddd-yin/github-zh
-// @version      1.3.0
+// @version      1.3.1
 // @homepageURL  https://github.com/cddd-yin/github-zh
 // @supportURL   https://github.com/cddd-yin/github-zh/issues
 // @updateURL    https://raw.githubusercontent.com/cddd-yin/github-zh/main/GitHub-%E4%B8%AD%E6%96%87%E5%8C%96.user.js
@@ -29,6 +29,8 @@
  *   4. 油猴菜单可随时开关，关闭时还原成英文。
  *
  * 更新记录：
+ *   v1.3.1  修复登录态空状态提示（You don't have any public repositories yet. /
+ *           You don't have any activity yet for this period. 等）。
  *   v1.3.0  个人主页专项：补齐主页词汇（屏蔽 / 热门仓库 / 贡献图 / 活动概览 /
  *           页脚等）；月份、星期与中文日期（贡献图坐标、悬停提示、活动时间）；
  *           活动列表句式（在 N 个仓库中创建了 M 个提交 等）；支持 Shadow DOM，
@@ -835,6 +837,9 @@
     [/^This repository has been archived by the owner on (.+)\.\s*It is now read-only\.?$/i, function (m, d) { return '此仓库已被所有者于 ' + (zhDateTime(d) || d) + ' 归档，现在是只读状态。'; }],
 
     /* ---------- v1.3.0：个人主页 / 活动列表 ---------- */
+    [/^You don't have any public repositories yet\.$/i, '你还没有公开仓库。'],
+    [/^You don't have any activity yet for this period\.$/i, '你在此时间段内还没有动态。'],
+    [/^You don't have any activity yet\.$/i, '你还没有动态。'],
     [/^(.+) doesn't have any public repositories yet\.$/i, '$1 还没有公开仓库。'],
     [/^(.+) has no activity yet for this period\.$/i, '$1 在此时间段内还没有动态。'],
     [/^and (\d[\d,]*) (?:other|more) repositories?$/i, '以及其他 $1 个仓库'],
@@ -1287,7 +1292,7 @@
     /* 调试入口：控制台可用 window.__ghzh.setEnabled(false) 等 */
     try {
       window.__ghzh = {
-        version: '1.3.0',
+        version: '1.3.1',
         setEnabled,
         translateRoot,
         translateTitle,

@@ -192,6 +192,10 @@
     test('动态：无公开仓库提示', function () {
       assertEq(textOf('<p>cddd-yin doesn\u2019t have any public repositories yet.</p>'), 'cddd-yin 还没有公开仓库。');
     });
+    test('动态：登录态空状态提示', function () {
+      assertEq(textOf('<p>You don\u2019t have any public repositories yet.</p>'), '你还没有公开仓库。');
+      assertEq(textOf('<p>You don\u2019t have any activity yet for this period.</p>'), '你在此时间段内还没有动态。');
+    });
     test('动态：1 contribution in the last year（单数修复）', function () {
       assertEq(textOf('<span>1 contribution in the last year</span>'), '1 次贡献（过去一年）');
     });

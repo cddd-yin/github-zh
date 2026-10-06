@@ -3,7 +3,7 @@
 把 GitHub 的**界面词汇**翻译成中文的 Tampermonkey（油猴）脚本。
 只翻界面，不碰代码、文件名、README / 议题正文、提交信息和用户名——比浏览器整页机翻干净得多。
 
-- 脚本文件：`GitHub-中文化.user.js`（v1.3.0）
+- 脚本文件：`GitHub-中文化.user.js`（v1.3.1）
 - 仓库：https://github.com/cddd-yin/github-zh
 
 ## 为什么不用浏览器翻译？
@@ -55,7 +55,7 @@ Chrome 新版默认**禁止油猴执行脚本**：请在 `chrome://extensions` �
 
 | 测试 | 运行方式 | 实测结果（2026-10-06） |
 | --- | --- | --- |
-| 单元断言 ×75 | 启动 `tests\serve.ps1` 后运行 `powershell -ExecutionPolicy Bypass -File tests\e2e\run-unit.ps1`（或手动打开 `http://127.0.0.1:8787/tests/test.html`） | ✅ 75 / 75 通过 |
+| 单元断言 ×76 | 启动 `tests\serve.ps1` 后运行 `powershell -ExecutionPolicy Bypass -File tests\e2e\run-unit.ps1`（或手动打开 `http://127.0.0.1:8787/tests/test.html`） | ✅ 76 / 76 通过 |
 | 个人主页体检 | `powershell -ExecutionPolicy Bypass -File tests\e2e\probe-profile.ps1 -Url https://github.com/cddd-yin` | ✅ 主页按钮 / 贡献图 / 页脚全部中文；剩余英文仅用户名与版权行（62 → 2） |
 | 模拟页面预览 | `http://127.0.0.1:8787/tests/demo.html` | 界面词变中文；代码、README 正文、文件名保持英文 |
 | 端到端（真实 GitHub） | `powershell -ExecutionPolicy Bypass -File tests\e2e\run.ps1` | ✅ nodejs/node：导航 / 按钮 / 占位符全部中文；README 正文零中文、首段一致；代码、文件名、正文探针均未被改动；开关可还原 |
@@ -91,6 +91,7 @@ LICENSE
 
 ## 更新日志
 
+- **v1.3.1**：修复登录态空状态提示（`You don't have any public repositories yet.`、`You don't have any activity yet for this period.` 等）；单元断言 76 项。
 - **v1.3.0**：个人主页专项——补齐主页词汇（屏蔽 / 举报、热门仓库、贡献图、活动概览、页脚等）；中文日期与相对时间（`Oct 5, 2026 → 2026年10月5日`、`2 days ago → 2 天前`），支持 Shadow DOM 中 `<relative-time>` 组件渲染的时间；活动列表句式（`Created 42 commits in 4 repositories → 在 4 个仓库中创建了 42 个提交`）；补仓库页词条（`+ 519 releases`、`Sponsor this project` 等）；修复 `1 contribution in the last year` 单数不命中；单元断言扩至 75 项，新增主页体检工具。
 - **v1.2.0**：词库扩充至 450 条（新增智能体 / 安全与质量 / 代码审查 / 大纲 等）；动态句式增加相对时间（`33 minutes ago → 33 分钟前`）、归档提示、关注 / 贡献计数；加载后分阶段补扫 + 聚焦 / 可见性补扫，减少个别标签偶发回退英文；E2E 测试脚本容忍长加载页面，更健壮。
 - **v1.1.0**：修复输入框 `placeholder` 未翻译的问题（表单控件自身放行）；补充词库（概览 / 仓库 / 发行版 / Actions 等）；新增 `tests/` 自动化测试与模拟预览页；接入 GitHub 仓库与更新地址。
