@@ -2,7 +2,7 @@
 // @name         GitHub 中文化 · 界面翻译
 // @name:en      GitHub Chinese UI
 // @namespace    https://github.com/cddd-yin/github-zh
-// @version      1.4.0
+// @version      1.5.0
 // @homepageURL  https://github.com/cddd-yin/github-zh
 // @supportURL   https://github.com/cddd-yin/github-zh/issues
 // @updateURL    https://raw.githubusercontent.com/cddd-yin/github-zh/main/GitHub-%E4%B8%AD%E6%96%87%E5%8C%96.user.js
@@ -29,6 +29,8 @@
  *   4. 油猴菜单可随时开关，关闭时还原成英文。
  *
  * 更新记录：
+ *   v1.5.0  动态属性即时翻译；安全还原页面最新状态；修复节点移出跳过区域后
+ *           漏翻、Shadow DOM 正文误翻；合并重叠增量扫描，避免重复遍历。
  *   v1.4.0  词库再扩 120+ 条并新增句法与属性规则：动作（Actions）页
  *           （Workflow / Event / Actor / 运行时长 / 工作流运行计数）、
  *           议题与 PR 列表（全部/搜索/各类「按…筛选」、排序、分页、
@@ -1042,7 +1044,7 @@
     'script', 'style', 'noscript', 'template',
     'code', 'pre', 'kbd', 'samp', 'var', 'tt',
     /* 输入控件 */
-    'textarea', 'input', 'select', 'option', '[contenteditable="true"]',
+    'textarea', 'input', 'select', 'option', '[contenteditable]:not([contenteditable="false"])',
     /* 正文区域：README、议题/评论/讨论的 Markdown 渲染结果 */
     '.markdown-body', '.comment-body',
     /* 代码查看 / 编辑 */
@@ -1103,11 +1105,24 @@
   }
 
   /* 已翻译记录，供关闭时还原 */
-  const touched = [];
+  const touched = new Set();
+  let touchedIndex = new WeakMap();
 
   function remember(entry) {
-    touched.push(entry);
-    if (touched.length > 5000) touched.splice(0, 1000);
+    const target = entry.node || entry.el;
+    let entries = touchedIndex.get(target);
+    if (!entries) touchedIndex.set(target, entries = new Map());
+    const key = entry.kind === 'text' ? 'text' : entry.name;
+    const previous = entries.get(key);
+    if (previous) touched.delete(previous);
+    entries.set(key, entry);
+    touched.add(entry);
+    /* 清掉已脱离页面的节点；不再丢弃仍可见节点的还原记录。 */
+    if (touched.size % 256 === 0) {
+      for (const t of touched) {
+        if (!(t.node || t.el).isConnected) touched.delete(t);
+      }
+    }
   }
 
   /* 翻译文本节点（保留首尾空白） */
@@ -1121,8 +1136,9 @@
     const out = translateCore(core);
     if (out == null || out === core) return;
 
-    remember({ kind: 'text', node, old: raw });
-    node.nodeValue = m[1] + out + m[3];
+    const next = m[1] + out + m[3];
+    remember({ kind: 'text', node, old: raw, translated: next });
+    node.nodeValue = next;
   }
 
   /* 翻译元素属性（悬停提示 / 占位符 / 无障碍标签） */
@@ -1137,22 +1153,17 @@
       const out = translateCore(raw);
       if (out == null || out === raw) continue;
 
-      remember({ kind: 'attr', el, name, old: raw });
+      remember({ kind: 'attr', el, name, old: raw, translated: out });
       el.setAttribute(name, out);
     }
   }
 
-  /* 跳过区域的缓存，避免重复 closest 查询 */
-  const skipCache = new WeakSet();
-
+  /* 不永久缓存：React 可能复用节点、移动节点或移除跳过标记。 */
   function isSkipped(el) {
     if (!el) return true;
-    if (skipCache.has(el)) return true;
-    if (el.closest(SKIP_SELECTOR)) {
-      skipCache.add(el);
-      return true;
-    }
-    return false;
+    if (el.closest(SKIP_SELECTOR)) return true;
+    const root = el.getRootNode();
+    return !!(root.host && isSkipped(root.host));
   }
 
   /* 文本节点的跳过判断：影子根 / 文档片段里的顶层文本没有元素父级，不应因此跳过 */
@@ -1160,6 +1171,7 @@
     const el = node.parentElement;
     if (el) return isSkipped(el);
     const p = node.parentNode;
+    if (p && p.host) return isSkipped(p.host);
     return !(p && (p.nodeType === Node.DOCUMENT_FRAGMENT_NODE || p.nodeType === Node.DOCUMENT_NODE));
   }
 
@@ -1169,9 +1181,9 @@
     if (!el || !el.matches) return true;
     if (el.matches('input, textarea, select')) {
       const parent = el.parentElement;
-      return !!(parent && parent.closest(SKIP_SELECTOR));
+      return parent ? isSkipped(parent) : !!(el.getRootNode().host && isSkipped(el.getRootNode().host));
     }
-    return !!el.closest(SKIP_SELECTOR);
+    return isSkipped(el);
   }
 
   /* Shadow DOM：GitHub 的时间组件（<relative-time> 等）把可见文本渲染在
@@ -1183,7 +1195,7 @@
     if (watchedShadow.has(sr)) return;
     watchedShadow.add(sr);
     try {
-      observer.observe(sr, { childList: true, subtree: true, characterData: true });
+      observer.observe(sr, observerOptions);
     } catch (_) {
       /* 忽略 */
     }
@@ -1254,18 +1266,19 @@
 
   /* 关闭时还原 */
   function revertAll() {
-    while (touched.length) {
-      const t = touched.pop();
+    for (const t of touched) {
       try {
         if (t.kind === 'text') {
-          if (t.node.isConnected) t.node.nodeValue = t.old;
-        } else if (t.el.isConnected) {
+          if (t.node.isConnected && t.node.nodeValue === t.translated) t.node.nodeValue = t.old;
+        } else if (t.el.isConnected && t.el.getAttribute(t.name) === t.translated) {
           t.el.setAttribute(t.name, t.old);
         }
       } catch (_) {
         /* 节点可能已被移除 */
       }
     }
+    touched.clear();
+    touchedIndex = new WeakMap();
   }
 
   /* ==================== 5. 动态内容监听 ==================== */
@@ -1284,8 +1297,13 @@
     const flush = () => {
       scheduled = false;
       const roots = Array.from(pending);
+      const queued = new Set(roots);
       pending.clear();
       for (const r of roots) {
+        /* 父树已在队列中时不重复扫描子树。 */
+        let parent = r.parentNode || r.host;
+        while (parent && !queued.has(parent)) parent = parent.parentNode || parent.host;
+        if (parent) continue;
         if (r === document || r.isConnected) translateRoot(r);
       }
       translateTitle();
@@ -1298,10 +1316,18 @@
     }
   }
 
+  const observerOptions = {
+    childList: true, subtree: true, characterData: true,
+    attributes: true, attributeFilter: ATTRS,
+  };
+
   const observer = new MutationObserver((mutations) => {
     if (!enabled) return;
     for (const m of mutations) {
-      if (m.type === 'characterData') {
+      if (m.type === 'attributes') {
+        /* 只补翻当前属性，不为属性变化重扫整棵子树；自身中文写入不会循环。 */
+        if (!isAttrSkipped(m.target)) translateElementAttrs(m.target);
+      } else if (m.type === 'characterData') {
         schedule(m.target);
       } else if (m.type === 'childList') {
         for (const node of m.addedNodes) {
@@ -1411,11 +1437,7 @@
 
   function init() {
     /* 增量监听（React 动态渲染、无刷新跳转、局部刷新都靠它兜底） */
-    observer.observe(document.documentElement, {
-      childList: true,
-      subtree: true,
-      characterData: true,
-    });
+    observer.observe(document.documentElement, observerOptions);
 
     document.addEventListener('turbo:load', onNavigate, true);
     document.addEventListener('turbo:render', onNavigate, true);
@@ -1440,7 +1462,7 @@
     /* 调试入口：控制台可用 window.__ghzh.setEnabled(false) 等 */
     try {
       window.__ghzh = {
-        version: '1.4.0',
+        version: '1.5.0',
         setEnabled,
         translateRoot,
         translateTitle,

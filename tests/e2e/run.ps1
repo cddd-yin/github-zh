@@ -1,4 +1,4 @@
-# Fully automated E2E test for the GitHub Chinese userscript.
+﻿# Fully automated E2E test for the GitHub Chinese userscript.
 #
 # What it does:
 #   1. starts a headless Chrome with a dedicated profile and a CDP port;
@@ -28,8 +28,7 @@ $src = [System.IO.File]::ReadAllText($srcFile.FullName, [System.Text.Encoding]::
 $checks = [System.IO.File]::ReadAllText($checksFile, [System.Text.Encoding]::UTF8)
 
 $chrome = 'C:\Program Files\Google\Chrome\Application\chrome.exe'
-$work = Join-Path $env:TEMP 'opencode\ghzh-e2e'
-if (Test-Path $work) { Remove-Item $work -Recurse -Force }
+$work = Join-Path $env:TEMP ('opencode\ghzh-e2e-' + [guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $work | Out-Null
 $profile = Join-Path $work 'profile'
 
@@ -93,9 +92,13 @@ try {
   [void](Eval-Expr -Ws $ws -Id 2 -Expr $beforeExpr)
 
   # 5. inject the userscript
-  $injectExpr = '(function(){ try { if (!window.__ghzh) { ' + $src + ' } } catch (e) { return "err:" + (e && e.message); } return window.__ghzh ? "injected" : "no-ghzh"; })()'
+  # 同一 JS 任务内比对全部正文，避免 GitHub 异步加载 / innerText 布局变化造成误报。
+  $injectExpr = '(function(){ var bodies = Array.from(document.querySelectorAll(".markdown-body")); var before = bodies.map(function(el){return el.textContent;}); try { if (!window.__ghzh) { ' + $src + ' } } catch (e) { return "err:" + (e && e.message); } window.__ghzhReadmeUnchanged = bodies.length > 0 && bodies.every(function(el,i){return el.textContent === before[i];}); return window.__ghzh ? "injected" : "no-ghzh"; })()'
   $inj = Eval-Expr -Ws $ws -Id 3 -Expr $injectExpr
+  if ($inj.error) { throw ($inj.error | ConvertTo-Json -Depth 8 -Compress) }
+  if ($inj.result.exceptionDetails) { throw ($inj.result.exceptionDetails | ConvertTo-Json -Depth 8 -Compress) }
   $injVal = [string]$inj.result.result.value
+  if (-not $injVal) { throw ('Empty injection result: ' + ($inj | ConvertTo-Json -Depth 8 -Compress)) }
 
   # 6. wait until a translation shows up
   $zh = $false
@@ -124,9 +127,17 @@ try {
   try { Invoke-RestMethod -Method Put "http://127.0.0.1:$Port/json/close/$($tab.id)" | Out-Null } catch {}
   $ws.Dispose()
 
-  [ordered]@{ ok = $true; inject = $injVal; zhSeen = $zh; screenshot = $shotSaved; report = $report } | ConvertTo-Json -Depth 6
+  $parsed = $report | ConvertFrom-Json
+  $ok = $injVal -eq 'injected' -and $zh -and $parsed.readme.unchanged -and
+    $parsed.probes.md -eq 'Issues' -and $parsed.probes.pre -eq 'Star' -and
+    $parsed.probes.blob -eq 'Settings' -and $parsed.probes.filter -eq 'Issues' -and
+    $parsed.probes.ctl -ne 'Issues' -and $parsed.probes.input -ne 'Search GitHub' -and
+    $parsed.off.issuesZh -eq 0 -and $parsed.on.issuesZh -gt 0
+  [ordered]@{ ok = $ok; inject = $injVal; zhSeen = $zh; screenshot = $shotSaved; report = $parsed } | ConvertTo-Json -Depth 6
+  if (-not $ok) { exit 1 }
 } catch {
   [ordered]@{ ok = $false; error = $_.Exception.Message } | ConvertTo-Json -Depth 6
+  exit 1
 } finally {
   if ($proc) { cmd /c "taskkill /PID $($proc.Id) /T /F >nul 2>nul" }
 }

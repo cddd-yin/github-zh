@@ -75,7 +75,8 @@
     afterLen: readmeNow ? readmeNow.length : -1,
     headSame: !!(before && readmeNow && before.head === readmeNow.slice(0, 200)),
     cjkInReadme: cjkCount,
-    unchanged: !!(before && readmeNow && cjkCount === 0 && before.head === readmeNow.slice(0, 200))
+    /* 跨时刻 innerText 仅作诊断；实际断言由注入时同步比对全文得出。 */
+    unchanged: window.__ghzhReadmeUnchanged === true
   };
 
   report.counts = {

@@ -52,7 +52,7 @@
 
   ready(run);
 
-  function run() {
+  async function run() {
     var g = window.__ghzh;
     if (!g) {
       renderError('未找到 window.__ghzh，用户脚本未成功加载。');
@@ -496,6 +496,104 @@
       } finally {
         document.title = old;
       }
+    });
+
+    /* ============ G. v1.5.0 动态更新与安全还原 ============ */
+    test('跳过：移除跳过标记后可重新翻译', function () {
+      var box = sandbox('<span data-ghzh-skip>Issues</span>');
+      g.translateRoot(box);
+      box.firstChild.removeAttribute('data-ghzh-skip');
+      g.translateRoot(box);
+      assertEq(box.textContent, '议题');
+    });
+    test('跳过：节点移出正文后可重新翻译', function () {
+      var box = sandbox('<div class="markdown-body"><span>Issues</span></div>');
+      var span = box.querySelector('span');
+      g.translateRoot(box);
+      box.appendChild(span);
+      g.translateRoot(span);
+      assertEq(span.textContent, '议题');
+    });
+    test('跳过：空值 contenteditable 编辑区', function () {
+      assertEq(textOf('<div contenteditable>Issues</div>'), 'Issues');
+    });
+    test('跳过：正文时间组件的 Shadow DOM', function () {
+      var box = sandbox('<div class="markdown-body"><relative-time></relative-time></div>');
+      var sr = box.querySelector('relative-time').attachShadow({ mode: 'open' });
+      sr.textContent = '2 days ago';
+      g.translateRoot(sr);
+      assertEq(sr.textContent, '2 days ago');
+    });
+    test('还原：不覆盖框架刚写入的新文本和属性', function () {
+      var box = sandbox('<button title="Issues">Issues</button>');
+      document.body.appendChild(box);
+      try {
+        g.translateRoot(box);
+        box.firstChild.firstChild.nodeValue = 'New user content';
+        box.firstChild.setAttribute('title', 'New tooltip');
+        g.setEnabled(false, true);
+        assertEq(box.textContent, 'New user content');
+        assertEq(box.firstChild.title, 'New tooltip');
+      } finally { box.remove(); g.setEnabled(true, true); }
+    });
+    test('还原：复用文本节点还原到最新英文', function () {
+      var box = sandbox('<span>Issues</span>');
+      document.body.appendChild(box);
+      try {
+        g.translateRoot(box);
+        box.firstChild.firstChild.nodeValue = 'Settings';
+        g.translateRoot(box);
+        g.setEnabled(false, true);
+        assertEq(box.textContent, 'Settings');
+      } finally { box.remove(); g.setEnabled(true, true); }
+    });
+    test('还原：不恢复已被页面删除的属性', function () {
+      var box = sandbox('<button title="Issues"></button>');
+      document.body.appendChild(box);
+      try {
+        g.translateRoot(box);
+        box.firstChild.removeAttribute('title');
+        g.setEnabled(false, true);
+        assertEq(box.firstChild.hasAttribute('title'), false);
+      } finally { box.remove(); g.setEnabled(true, true); }
+    });
+
+    /* 真实 MutationObserver 回调，不手工调用 translateRoot。 */
+    async function dynamicTest(name, fn) {
+      var box = document.createElement('div');
+      document.body.appendChild(box);
+      try {
+        await fn(box);
+        test(name, function () {});
+      } catch (e) {
+        test(name, function () { throw e; });
+      } finally { box.remove(); g.setEnabled(true, true); }
+    }
+    function settle() { return new Promise(function (resolve) { setTimeout(resolve, 100); }); }
+    await dynamicTest('动态：已有节点的 title / aria-label 更新即时翻译', async function (box) {
+      box.innerHTML = '<button></button>';
+      await settle();
+      box.firstChild.title = 'Issues';
+      box.firstChild.setAttribute('aria-label', 'Settings');
+      await settle();
+      assertEq(box.firstChild.title, '议题');
+      assertEq(box.firstChild.getAttribute('aria-label'), '设置');
+    });
+    await dynamicTest('动态：已有输入框 placeholder 更新即时翻译', async function (box) {
+      box.innerHTML = '<input>';
+      await settle();
+      box.firstChild.placeholder = 'Search GitHub';
+      await settle();
+      assertEq(box.firstChild.placeholder, '搜索 GitHub');
+    });
+    await dynamicTest('动态：关闭期间不翻译，重新开启补翻', async function (box) {
+      box.innerHTML = '<button></button>';
+      g.setEnabled(false, true);
+      box.firstChild.title = 'Issues';
+      await settle();
+      assertEq(box.firstChild.title, 'Issues');
+      g.setEnabled(true, true);
+      assertEq(box.firstChild.title, '议题');
     });
 
     try { localStorage.removeItem('ghzh:enabled'); } catch (e) {}

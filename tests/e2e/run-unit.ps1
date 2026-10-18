@@ -8,6 +8,8 @@
 #   powershell -ExecutionPolicy Bypass -File tests\e2e\run-unit.ps1 [-Url http://127.0.0.1:8787/tests/test.html]
 param(
   [string]$Url = 'http://127.0.0.1:8787/tests/test.html',
+  [ValidateSet('Chrome', 'Edge')]
+  [string]$Browser = 'Chrome',
   [int]$Port = 9227,
   [int]$TimeoutSec = 45
 )
@@ -16,8 +18,8 @@ $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
 $chrome = 'C:\Program Files\Google\Chrome\Application\chrome.exe'
-$work = Join-Path $env:TEMP 'opencode\ghzh-unit'
-if (Test-Path $work) { Remove-Item $work -Recurse -Force }
+if ($Browser -eq 'Edge') { $chrome = 'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe' }
+$work = Join-Path $env:TEMP ('opencode\ghzh-unit-' + [guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $work | Out-Null
 $profile = Join-Path $work 'profile'
 
@@ -48,7 +50,7 @@ function Eval-Expr {
   return Invoke-Cdp -Ws $Ws -Payload $payload
 }
 
-$result = [ordered]@{ ok = $false }
+$result = [ordered]@{ ok = $false; browser = $Browser }
 try {
   $ver = $null
   for ($i = 0; $i -lt 60; $i++) {
@@ -90,3 +92,4 @@ try {
 }
 
 $result | ConvertTo-Json -Depth 6
+if (-not $result['ok']) { exit 1 }
