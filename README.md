@@ -10,28 +10,43 @@
 
 浏览器整页翻译会把代码、文件路径、Issue 正文、用户名一起翻掉：语法高亮里的 `const` 会变成「常量」，报错信息翻得没法搜索，链接也可能被改坏。本脚本采用**整节点精确匹配**：只有整个文本恰好是界面词汇时才翻译，并主动跳过代码、文件名、正文等区域。
 
-## 安装
+## 安装（新手照做即可）
 
-### 前置要求（Chrome 138+）
+全程三步：**装油猴扩展 → 打开一个开关 → 点一个链接**。装完刷新 GitHub 就是中文界面。
 
-Chrome 新版默认**禁止油猴执行脚本**：请在 `chrome://extensions` 中找到「篡改猴 / Tampermonkey」→「详情」→ 打开「**允许用户脚本**」开关（或者打开扩展页右上角的「开发者模式」）。否则**任何**油猴脚本都不会运行（本脚本、其他汉化脚本都一样）。
+### 第 0 步：安装油猴扩展 Tampermonkey
 
-### 方式一：本地 URL 安装（本机推荐）
+在浏览器扩展商店里搜索并安装「**Tampermonkey / 篡改猴**」，或直接点对应链接：
 
-1. 在项目根目录启动本地服务（只监听 127.0.0.1）：
+- Chrome：[Chrome 商店 - Tampermonkey](https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)
+- Edge：[Edge 商店 - Tampermonkey](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpaadaobahmlepeloendndfphd)
+- Firefox：[Firefox 附加组件 - Tampermonkey](https://addons.mozilla.org/firefox/addon/tampermonkey/)
 
-   ```powershell
-   powershell -ExecutionPolicy Bypass -File tests\serve.ps1
-   ```
+### 第 1 步：打开「允许用户脚本」开关（Chrome / Edge 138+ 必做）
 
-2. 在浏览器打开 `http://127.0.0.1:8787/GitHub-中文化.user.js`
-3. 油猴会拦截并弹出安装页，点「安装」即可。
+Chrome / Edge 新版默认**禁止油猴执行脚本**：在浏览器地址栏输入 `chrome://extensions`（Edge 用 `edge://extensions`）→ 找到「篡改猴 / Tampermonkey」→「详情」→ 打开「**允许用户脚本**」开关（或者打开扩展页右上角的「开发者模式」）。
+不开这个开关，**任何**油猴脚本都不会运行（本脚本、其他汉化脚本都一样）。
 
-> 仓库当前为**私有**（个人使用）：`raw.githubusercontent.com` 的链接需要登录才能访问，所以「从 GitHub 安装 + 自动更新」在仓库公开前不可用（不影响本机使用）。将仓库设为公开后，安装与 `@updateURL` 自动更新即可正常工作。
+### 第 2 步：点链接安装
 
-### 方式二：手动安装
+在浏览器打开这个链接，油猴会弹出安装页 → 点「**安装**」：
 
-油猴面板 → 「添加新脚本」→ 粘贴 `GitHub-中文化.user.js` 全文 → Ctrl+S 保存。
+> [点此安装：GitHub-中文化.user.js](https://raw.githubusercontent.com/cddd-yin/github-zh/main/GitHub-%E4%B8%AD%E6%96%87%E5%8C%96.user.js)
+
+装好后刷新任意 GitHub 页面，界面即为中文。以后脚本有更新时，Tampermonkey 会自动检查并在后台更新（也可在油猴面板的「已安装脚本」里手动点更新）。
+
+### 备用方式：手动粘贴安装（上面的链接打不开时）
+
+点 [脚本文件](GitHub-中文化.user.js) 查看全文并复制（或下载后用记事本打开复制全部内容）→ 浏览器右上角油猴图标 → 「添加新脚本」→ 清空后粘贴全文 → `Ctrl+S` 保存。
+
+### 常见问题
+
+| 现象 | 解决方法 |
+| --- | --- |
+| 装了脚本 GitHub 还是英文 | 检查第 1 步的「允许用户脚本」开关；确认油猴面板里本脚本已启用；刷新页面 |
+| 点安装链接没反应 / 提示下载 | 网络无法访问 GitHub 直链（境内常见），挂代理后重试，或用「备用方式」手动粘贴 |
+| 部分界面还是英文 | 词库覆盖不到的新文案，欢迎反馈；也可按下方「自定义」自行加词 |
+| 想暂时用回英文 | 点油猴图标 → 脚本菜单里的开关即可，随时切回 |
 
 ## 功能
 
@@ -48,9 +63,9 @@ Chrome 新版默认**禁止油猴执行脚本**：请在 `chrome://extensions` �
 - 动态更新的提示、无障碍标签与输入框占位符即时补翻；合并重叠的增量扫描，减少重复遍历；
 - 油猴菜单可随时开关，关闭时**还原**成英文。
 
-### 更新 Chrome / Edge 已安装脚本
+### 更新已安装的脚本
 
-启动上述本地服务后，在两个浏览器分别打开本地脚本 URL，在 Tampermonkey 页面确认版本 **1.5.0** 并点击「更新」（首次使用则点击「安装」），然后刷新 GitHub 页面。浏览器中的安装确认需要分别完成；推送仓库本身不代表已更新本地油猴。
+从直链安装后，Tampermonkey 会按 `@updateURL` 自动检查更新（默认每天一次）；也可在油猴面板 →「实用工具 / 已安装脚本」里手动检查更新，更新后刷新 GitHub 页面生效。开发者本地改动脚本后，可启动本地服务（`tests\serve.ps1`，监听 127.0.0.1:8787）在浏览器打开 `http://127.0.0.1:8787/GitHub-中文化.user.js` 完成重装；推送仓库本身不代表已更新本地油猴。
 
 ## 不会翻译的区域（设计如此）
 
